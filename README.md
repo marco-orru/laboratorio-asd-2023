@@ -171,11 +171,11 @@ separati da `\n`.
 Usando l'algoritmo implementato precedentemente, si realizzi la seguente funzione per ordinare *record* contenuti nel file `records.csv` in ordine non decrescente secondo i valori contenuti nei tre campi "field".
 
 ```
-void sort_records(const char *infile, const char *outfile, size_t k, size_t field);
+void sort_records(FILE *infile, FILE *outfile, size_t k, size_t field);
 ```
 
-- `infile` è il percorso del file CSV contenente i record da ordinare;
-- `outfile` è un percorso nel quale salvare i record ordinati (che deve essere diverso da `infile`);
+- `infile` è il file contenente i record da ordinare;
+- `outfile` è il file nel quale salvare i record ordinati (che deve essere diverso da `infile`);
 - `k` è un parametro dell'algoritmo;
 - `field` può valere 1, 2 o 3 e indica quale dei tre campi deve essere usato per ordinare i record.
 
