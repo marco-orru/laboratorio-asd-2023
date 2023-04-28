@@ -243,7 +243,7 @@ Dove:
 La libreria deve implementare tutte le seguenti dichiarazioni.
 
 ```
-void new_skiplist(struct SkipList **list, size_t max_height, int (*compar)(const void *, const void*));
+void new_skiplist(struct SkipList **list, size_t max_height, int (*compar)(const void*, const void*));
 
 void clear_skiplist(struct SkipList **list);
 
