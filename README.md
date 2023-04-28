@@ -122,7 +122,7 @@ Si rammenta, però, che il focus del laboratorio è l'implementazione di struttu
 Implementare una libreria che offre un algoritmo di ordinamento  *Merge-BinaryInsertion Sort* su dati generici, implementando il seguente prototipo di funzione:
 
 ```
-void merge_binary_insertion_sort(void *base, size_t nitems, size_t size, size_t k, int (*compar)(const void *, const void*));
+void merge_binary_insertion_sort(void *base, size_t nitems, size_t size, size_t k, int (*compar)(const void*, const void*));
 ```
 
 - `base` è un puntatore al primo elemento dell'array da ordinare;
@@ -342,10 +342,10 @@ Il dizionario contiene un elenco di parole. Le parole sono scritte di seguito, c
 
 Il file `correctme.txt` contiene un testo da correggere. Alcune parole in questo testo non ci sono nel dizionario.
 
-Si implementi una applicazione che usa la struttura dati `*SkipList*` per determinare in maniera efficiente la lista di parole nel testo da correggere non presenti nel dizionario dato come input al programma. L'applicazione deve implementare la seguente dichiarazione:
+Si implementi una applicazione che usa la struttura dati *SkipList* per determinare in maniera efficiente la lista di parole nel testo da correggere non presenti nel dizionario dato come input al programma. L'applicazione deve implementare la seguente dichiarazione:
 
 ```
-void find_errors(const char *dictfile, const char *textfile, size_t max_height);
+void find_errors(FILE *dictfile, FILE *textfile, size_t max_height);
 ```
 
 - `dictfile` è il percorso del file contenente le parole del dizionario;
@@ -410,7 +410,7 @@ Implementare gli unit-test degli algoritmi secondo le indicazioni suggerite nel 
 
 ### Testo
 
-Si implementi una libreria che realizza la struttura dati Grafo in modo che sia ottimale per dati sparsi
+Si implementi una libreria che realizza la struttura dati *Grafo* in modo che sia ottimale per dati sparsi
 (**attenzione**: le scelte implementative che farete dovranno essere giustificate in relazione alle nozioni presentate
 durante le lezioni in aula).
 
@@ -448,7 +448,7 @@ Implementare gli unit-test degli algoritmi secondo le indicazioni suggerite nel 
 
 ### Uso della libreria che implementa la struttura dati Grafo
 
-Si implementi l'algoritmo di Prim per la determinazione della minima foresta  ricoprente di un grafo, secondo il seguente template:
+Si implementi l'algoritmo di Prim per la determinazione della minima foresta ricoprente di un grafo, secondo il seguente template:
 
 ```
 public class Prim {
@@ -476,7 +476,7 @@ Ogni record contiene i seguenti dati:
 **Note:**
 
 - Nel caso in cui il grafo sia costituito da una sola componente connessa, l'algoritmo restituirà un albero. Nel caso in cui, invece, vi siano più componenti connesse, l'algoritmo restituirà una foresta costituita dai minimi alberi ricoprenti di ciascuna componente connessa.
-- Potete intrepretare le informazioni presenti nelle righe del file come   archi **non diretti** (per cui probabilmente vorrete inserire nel vostro grafo sia l'arco di andata che quello di ritorno a fronte di ogni riga letta).
+- Potete intrepretare le informazioni presenti nelle righe del file come archi **non diretti** (per cui probabilmente vorrete inserire nel vostro grafo sia l'arco di andata che quello di ritorno a fronte di ogni riga letta).
 - Il file è stato creato a partire da un dataset poco accurato. I dati riportati contengono inesattezze e imprecisioni.
 - Un'implementazione corretta dell'algoritmo di Prim, eseguita sui dati contenuti nel file `italian_dist_graph.csv`, dovrebbe determinare una minima foresta ricoprente con 18.640 nodi, 18.637 archi (non orientati) e di peso complessivo di circa 89.939,913 Km.
 
