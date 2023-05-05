@@ -380,24 +380,28 @@ wita
 
 Si implementi la struttura dati *coda con priorità (PriorityQueue)*.
 
-La struttura dati deve gestire tipi generici e consentire un numero qualunque e non noto a priori di elementi, implementando la seguente interfaccia:
+La struttura dati deve gestire tipi generici e consentire un numero qualunque e non noto a priori di elementi, implementando la seguente interfaccia (con requisiti minimi di complessità):
 
 ```
 public interface AbstractQueue<E> {
-  public boolean empty(); // controlla se la coda è vuota
-  public boolean push(E e); // aggiunge un elemento alla coda
-  public boolean contains(E e); // controlla se un elemento è in coda
-  public E top(); // accede all'elemento in cima alla coda
-  public void pop(); // rimuove l'elemento in cima alla coda
-  public boolean remove(E e); // rimuove un elemento se presente in coda
+  public boolean empty(); // controlla se la coda è vuota -- O(1)
+  public boolean push(E e); // aggiunge un elemento alla coda -- O(logN)
+  public boolean contains(E e); // controlla se un elemento è in coda -- O(logN)
+  public E top(); // accede all'elemento in cima alla coda -- O(1)
+  public void pop(); // rimuove l'elemento in cima alla coda -- O(logN)
+  public boolean remove(E e); // rimuove un elemento se presente in coda -- O(logN)
 };
 ```
+
+*Suggerimento*: per implementare i metodi `contains` e `remove` potrebbe essere necessario usare una struttura dati di appoggio oltre allo heap (è ammesso usare strutture dati dalla libreria standard di Java se necessario).
 
 La classe concreta `PriorityQueue<E>` che implementa l'interfaccia dovrebbe avere almeno un costruttore che crea una coda vuota e prende come argomento un `Comparator<E>` da usare per confrontare gli elementi:
 
 ```
 PriorityQueue(Comparator<E> comparator)
 ```
+
+_Nota_: `Comparator` è un'[interfaccia base](https://docs.oracle.com/en/java/javase/20/docs/api/java.base/java/util/Comparator.html) di Java.
 
 ### Unit Testing
 
@@ -441,6 +445,8 @@ public interface AbstractGraph<V,W extends Number> {
 ```
 
 _(*)_ quando il grafo è veramente sparso, assumendo che l'operazione venga effettuata su un nodo la cui lista di adiacenza ha una lunghezza in O(1).
+
+_Nota_: `AbstractCollection` è un'[interfaccia base](https://docs.oracle.com/en/java/javase/20/docs/api/java.base/java/util/AbstractCollection.html) di Java.
 
 L'interfaccia `AbstractGraph` si basa sulla seguente interfaccia per la rappresentazione di un arco:
 
