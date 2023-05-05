@@ -261,7 +261,7 @@ La funzione deve allocare una nuova skiplist, data l'altezza massima e la funzio
 La funzione deve liberare correttamente tutta la memoria allocata per la *SkipList*, inclusi tutti i nodi interni e i dati in essi contenuti. L'utilizzo inteso di queste prime due funzioni è ad esempio:
 
 ```
-struct Skiplist* list = NULL;
+struct Skiplist *list = NULL;
 new_skiplist(&list, 10, compare);
 // ora list != NULL, posso usarla
 // per inserire elementi: insert_skiplist(list, ptr); 
@@ -417,33 +417,54 @@ Si implementi una libreria che realizza la struttura dati *Grafo* in modo che si
 (**attenzione**: le scelte implementative che farete dovranno essere giustificate in relazione alle nozioni presentate
 durante le lezioni in aula).
 
-La struttura deve consentire di rappresentare sia grafi diretti che grafi non diretti
-(*suggerimento*:  un grafo non diretto può essere rappresentato usando un'implementazione per grafi diretti modificata
-per garantire che, per ogni arco *(a,b)* etichettato *w*, presente nel grafo, sia presente nel grafo anche l'arco *(b,a)*
-etichettato *w*. Ovviamente, il grafo dovrà mantenere l'informazione che specifica se esso è un grafo diretto o non diretto.).
-
 L'implementazione deve essere generica sia per quanto riguarda il tipo dei nodi, sia per quanto riguarda le etichette
-degli archi.
-La struttura dati implementata dovrà offrire (almeno) le seguenti operazioni (accanto a ogni operazione è specificata la
-complessità richiesta; n può indicare il numero di nodi o il numero di archi, a seconda del contesto):
+degli archi, implementando la seguente interfaccia (con requisiti minimi di complessità; dove _N_ può indicare il numero di nodi o il numero di archi, a seconda del contesto):
 
-- Creazione di un grafo vuoto – O(1)
-- Aggiunta di un nodo – O(1)
-- Aggiunta di un arco – O(1)
-- Verifica se il grafo è diretto – O(1)
-- Verifica se il grafo contiene un dato nodo – O(1)
-- Verifica se il grafo contiene un dato arco – O(1)  _(*)_
-- Cancellazione di un nodo – O(n)
-- Cancellazione di un arco – O(1)  (*)
-- Determinazione del numero di nodi – O(1)
-- Determinazione del numero di archi – O(n)
-- Recupero dei nodi del grafo – O(n)
-- Recupero degli archi del grafo – O(n)
-- Recupero nodi adiacenti di un dato nodo – O(1)  _(*)_
-- Recupero etichetta associata a una coppia di nodi – O(1) _(*)_
-- Determinazione del peso del grafo (se il grafo non è pesato, il metodo può terminare con un errore)– O(n)
+```
+public interface AbstractGraph<V,W extends Number> {
+  public boolean isDirected(); // dice se il grafo è diretto o meno -- O(1)
+  public boolean isWeighted(); // dice se il grafo è pesato o meno -- O(1)
+  public boolean addNode(V a); // aggiunge un nodo -- O(1)
+  public boolean addEdge(V a, V b, W w); // aggiunge un arco dati estremi e peso -- O(1)
+  public boolean containsNode(V a); // controlla se un nodo è nel grafo -- O(1)
+  public boolean containsEdge(V a, V b); // controlla se un arco è nel grafo -- O(1) (*)
+  public boolean removeNode(V a); // rimuove un nodo dal grafo -- O(N)
+  public boolean removeEdge(V a, V b); // rimuove un arco dal grafo -- O(1) (*)
+  public int numNodes(); // numero di nodi -- O(1)
+  public int numEdges(); // numero di archi -- O(N)
+  public AbstractCollection<V> getNodes(); // recupero dei nodi del grafo -- O(N)
+  public AbstractCollection<AbstractEdge<V,W>> getEdges(); // recupero degli archi del grafo -- O(N)
+  public AbstractCollection<V> getNeighbours(V a); // recupero dei nodi adiacenti ad un dato nodo -- O(1) (*)
+  public W getWeight(V a, V b); // recupero del peso di un arco -- O(1) (*)
+  public double getTotalWeight(); // recupero del peso totale del grafo (se il grafo non è pesato il metodo termina con una NullPointerException) -- O(N)
+};
+```
 
 _(*)_ quando il grafo è veramente sparso, assumendo che l'operazione venga effettuata su un nodo la cui lista di adiacenza ha una lunghezza in O(1).
+
+L'interfaccia `AbstractGraph` si basa sulla seguente interfaccia per la rappresentazione di un arco:
+
+```
+public interface AbstractEdge<V,W> {
+  public V getStart(); // il nodo di partenza dell'arco
+  public V getEnd(); // il nodo di arrivo dell'arco
+  public W getWeight(); // il peso dell'arco
+};
+```
+
+La classe concreta `Graph<V,W extends Number>` che implementa l'interfaccia `AbstractGraph` dovrebbe avere almeno un costruttore che crea un grafo vuoto in complessità O(1) e prende come argomenti due valori booleani per impostare se il grafo è da considerarsi diretto o meno, e se è da considerarsi pesato o meno:
+
+```
+Graph(boolean directed, boolean weighted)
+```
+
+A seconda del valore di questi due parametri, cambierà il comportamento dei metodi per gestire gli archi per tutte le operazioni successive.
+
+*Suggerimento*:  un grafo non diretto può essere rappresentato usando un'implementazione per grafi diretti modificata
+per garantire che, per ogni arco *(a,b)* etichettato *w*, presente nel grafo, sia presente nel grafo anche l'arco *(b,a)*
+etichettato *w*. Ovviamente, il grafo dovrà mantenere l'informazione che specifica se esso è un grafo diretto o non diretto.
+Similmente, un grafo non pesato può essere rappresentato usando l'implementazione per grafi pesati modificata per garantire
+che i pesi passati siano sempre `null` (che invece non devono mai essere `null` per i grafi pesati).
 
 ### Unit Testing
 
@@ -458,7 +479,8 @@ public class Prim {
   public static void main(String[] args) {
     // leggi i dati CSV del grafo dal percorso in args[1] 
     // calcola la minima foresta ricoprente con l'algoritmo di Prim
-    // scrivi su standard output una descrizione della foresta calcolata come CSV  
+    // scrivi su standard output una descrizione della foresta calcolata come CSV con formato analogo a quello in input
+    // ai fini della correzione automatica, scrivere gli archi in output di modo che la partenza sia lessicograficamente minore della destinazione
   }
 }
 ```
