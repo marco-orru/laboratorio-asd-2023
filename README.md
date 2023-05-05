@@ -386,12 +386,18 @@ La struttura dati deve gestire tipi generici e consentire un numero qualunque e 
 public interface AbstractQueue<E> {
   public boolean empty(); // controlla se la coda è vuota
   public boolean push(E e); // aggiunge un elemento alla coda
+  public boolean contains(E e); // controlla se un elemento è in coda
   public E top(); // accede all'elemento in cima alla coda
   public void pop(); // rimuove l'elemento in cima alla coda
+  public boolean remove(E e); // rimuove un elemento se presente in coda
 };
 ```
 
-La classe `PriorityQueue<E>` che implementa l'interfaccia dovrebbe avere almeno un costruttore che crea una coda vuota e prende come argomento un `Comparator<E>` da usare per confrontare gli elementi.
+La classe concreta `PriorityQueue<E>` che implementa l'interfaccia dovrebbe avere almeno un costruttore che crea una coda vuota e prende come argomento un `Comparator<E>` da usare per confrontare gli elementi:
+
+```
+PriorityQueue(Comparator<E> comparator)
+```
 
 ### Unit Testing
 
