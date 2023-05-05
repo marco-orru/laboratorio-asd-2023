@@ -136,7 +136,7 @@ Con *BinaryInsertion Sort* ci riferiamo a una versione dell'algoritmo *Insertion
 In alternativa, è anche ammissibile implementare il seguente prototipo meno generico, che ordina dati a patto che siano organizzati in un array di puntatori:
 
 ```
-void merge_binary_insertion_sort(void **base, size_t nitems, size_t k, int (*compar)(const void *, const void*));
+void merge_binary_insertion_sort(void **base, size_t nitems, size_t k, int (*compar)(const void*, const void*));
 ```
 
 - `base` è un puntatore al primo elemento dell'array di puntatori da ordinare sulla base dei valori riferiti;
@@ -217,7 +217,7 @@ L'implementazione deve essere generica per quanto riguarda il tipo dei dati memo
 
 ```
 struct SkipList {
-  struct Node *head;
+  struct Node **heads;
   size_t max_level;
   size_t max_height;
   int (*compare)(const void*, const void*);
@@ -232,7 +232,7 @@ struct Node {
 
 Dove:
 
-- `head` è il primo nodo della *SkipList*;
+- `heads` sono i puntatori di inizio della *SkipList* per ogni livello fino a `max_height`;
 - `max_level` è il massimo numero di puntatori che **al momento ci sono** in un singolo nodo della *SkipList* (come si vede nella figura, ogni nodo può avere un numero distinto di puntatori);
 - `max_height` è una costante che definisce il massimo numero di puntatori che **possono esserci** in un singolo nodo della *SkipList*;
 - `compar` è il criterio secondo cui ordinare i dati (dati due puntatori a elementi);
@@ -275,32 +275,30 @@ clear_skiplist(&list);
 La funzione deve inserire un certo elemento `item` nella skiplist `list`. L'elemento da inserire viene fornito come puntatore ad un dato generico, la cui "responsabilità" viene passata alla skiplist (che quindi dovrà deallocarlo quando verrà deallocata la skiplist). Una possibile implementazione di questa funzione in pseudo-codice (da tradurre quindi in C) è la seguente:
 
 ```
-insertSkipList(list, item)
-
-    new = createNode(item, randomLevel())
-    if new->size > list->max_level
+insertSkipList(list, item):
+    new = createNode(item, randomLevel(list->max_height))
+    if new->size > list->max_level:
         list->max_level = new->size
 
-    x = list->head
-    for k = list->max_level downto 1 do
-        if (x->next[k] == NULL || item < x->next[k]->item)
-            if k < new->size {
-              new->next[k] = x->next[k]
-              x->next[k] = new
-            }
-        else
-            x = x->next[k]
+    x = list->heads
+    for k = list->max_level downto 1:
+        if x[k] == NULL or item < x[k]->item:
+            if k < new->size:
+              new->next[k] = x[k]
+              x[k] = new
+        else:
+            x = x[k]->next
             k++
 ```
 
 La funzione `randomLevel()` nel codice precedente determina il numero di puntatori da includere nel nuovo nodo e deve essere realizzata conformemente al seguente algoritmo. Spiegare il vantaggio di questo algoritmo nella relazione da consegnare con l'esercizio:
 
 ```
-randomLevel()
+randomLevel(max_height):
     lvl = 1
 
     // random() returns a random value in [0...1)
-    while random() < 0.5 and lvl < MAX_HEIGHT do
+    while random() < 0.5 and lvl < max_height:
         lvl = lvl + 1
     return lvl
 ```
@@ -310,18 +308,17 @@ randomLevel()
 La funzione deve verificare se un elemento con valore uguale ad  `item` è presente nella skiplist `list`; restituendo `NULL` se nessuna corrispondenza viene trovata, e restituendo il puntatore all'elemento `item` memorizzato nella skiplist altrimenti. Una possibile implementazione di questa funzione in pseudo-codice (da tradurre quindi in C) è la seguente:
 
 ```
-searchSkipList(list, item)
-    x = list->head
+searchSkipList(list, item):
+    x = list->heads
 
-    // loop invariant: x->item < item
-    for i = list->max_level downto 1 do
-        while x->next[i]->item < item do
-            x = x->next[i]
+    // loop invariant: x[i]->item <= item or item < first element of level i in list
+    for i = list->max_level downto 1:
+        while x[i]->next[i] != NULL and x[i]->next[i]->item <= item:
+            x = x[i]->next
 
-    // x->item < item <= x->next[1]->item
-    x = x->next[1]
-    if x->item == item then
-        return x->item
+    // loop end: x[1]->item <= item or item < first element in list
+    if x[1]->item == item then
+        return x[1]->item
     else
         return failure
 ```
