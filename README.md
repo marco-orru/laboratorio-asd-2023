@@ -386,7 +386,7 @@ La struttura dati deve gestire tipi generici e consentire un numero qualunque e 
 public interface AbstractQueue<E> {
   public boolean empty(); // controlla se la coda è vuota -- O(1)
   public boolean push(E e); // aggiunge un elemento alla coda -- O(logN)
-  public boolean contains(E e); // controlla se un elemento è in coda -- O(logN)
+  public boolean contains(E e); // controlla se un elemento è in coda -- O(1)
   public E top(); // accede all'elemento in cima alla coda -- O(1)
   public void pop(); // rimuove l'elemento in cima alla coda -- O(logN)
   public boolean remove(E e); // rimuove un elemento se presente in coda -- O(logN)
@@ -425,11 +425,11 @@ L'implementazione deve essere generica sia per quanto riguarda il tipo dei nodi,
 degli archi, implementando la seguente interfaccia (con requisiti minimi di complessità; dove _N_ può indicare il numero di nodi o il numero di archi, a seconda del contesto):
 
 ```
-public interface AbstractGraph<V,W extends Number> {
+public interface AbstractGraph<V,L> {
   public boolean isDirected(); // dice se il grafo è diretto o meno -- O(1)
-  public boolean isWeighted(); // dice se il grafo è pesato o meno -- O(1)
+  public boolean isLabelled(); // dice se il grafo è etichettato o meno -- O(1)
   public boolean addNode(V a); // aggiunge un nodo -- O(1)
-  public boolean addEdge(V a, V b, W w); // aggiunge un arco dati estremi e peso -- O(1)
+  public boolean addEdge(V a, V b, L l); // aggiunge un arco dati estremi ed etichetta -- O(1)
   public boolean containsNode(V a); // controlla se un nodo è nel grafo -- O(1)
   public boolean containsEdge(V a, V b); // controlla se un arco è nel grafo -- O(1) (*)
   public boolean removeNode(V a); // rimuove un nodo dal grafo -- O(N)
@@ -437,10 +437,9 @@ public interface AbstractGraph<V,W extends Number> {
   public int numNodes(); // numero di nodi -- O(1)
   public int numEdges(); // numero di archi -- O(N)
   public AbstractCollection<V> getNodes(); // recupero dei nodi del grafo -- O(N)
-  public AbstractCollection<AbstractEdge<V,W>> getEdges(); // recupero degli archi del grafo -- O(N)
+  public AbstractCollection<AbstractEdge<V,L>> getEdges(); // recupero degli archi del grafo -- O(N)
   public AbstractCollection<V> getNeighbours(V a); // recupero dei nodi adiacenti ad un dato nodo -- O(1) (*)
-  public W getWeight(V a, V b); // recupero del peso di un arco -- O(1) (*)
-  public double getTotalWeight(); // recupero del peso totale del grafo (se il grafo non è pesato il metodo termina con una NullPointerException) -- O(N)
+  public L getLabel(V a, V b); // recupero dell'etichetta di un arco -- O(1) (*)
 };
 ```
 
@@ -451,17 +450,17 @@ _Nota_: `AbstractCollection` è un'[interfaccia base](https://docs.oracle.com/en
 L'interfaccia `AbstractGraph` si basa sulla seguente interfaccia per la rappresentazione di un arco:
 
 ```
-public interface AbstractEdge<V,W> {
+public interface AbstractEdge<V,L> {
   public V getStart(); // il nodo di partenza dell'arco
   public V getEnd(); // il nodo di arrivo dell'arco
-  public W getWeight(); // il peso dell'arco
+  public L getLabel(); // l'etichetta dell'arco
 };
 ```
 
-La classe concreta `Graph<V,W extends Number>` che implementa l'interfaccia `AbstractGraph` dovrebbe avere almeno un costruttore che crea un grafo vuoto in complessità O(1) e prende come argomenti due valori booleani per impostare se il grafo è da considerarsi diretto o meno, e se è da considerarsi pesato o meno:
+La classe concreta `Graph<V,L>` che implementa l'interfaccia `AbstractGraph` dovrebbe avere almeno un costruttore che crea un grafo vuoto in complessità O(1) e prende come argomenti due valori booleani per impostare se il grafo è da considerarsi diretto o meno, e se è da considerarsi etichettato o meno:
 
 ```
-Graph(boolean directed, boolean weighted)
+Graph(boolean directed, boolean labelled)
 ```
 
 A seconda del valore di questi due parametri, cambierà il comportamento dei metodi per gestire gli archi per tutte le operazioni successive.
@@ -469,8 +468,8 @@ A seconda del valore di questi due parametri, cambierà il comportamento dei met
 *Suggerimento*:  un grafo non diretto può essere rappresentato usando un'implementazione per grafi diretti modificata
 per garantire che, per ogni arco *(a,b)* etichettato *w*, presente nel grafo, sia presente nel grafo anche l'arco *(b,a)*
 etichettato *w*. Ovviamente, il grafo dovrà mantenere l'informazione che specifica se esso è un grafo diretto o non diretto.
-Similmente, un grafo non pesato può essere rappresentato usando l'implementazione per grafi pesati modificata per garantire
-che i pesi passati siano sempre `null` (che invece non devono mai essere `null` per i grafi pesati).
+Similmente, un grafo non etichettato può essere rappresentato usando l'implementazione per grafi etichettati modificata per garantire
+che le etichette siano sempre `null` (che invece non devono mai essere `null` per i grafi etichettati).
 
 ### Unit Testing
 
