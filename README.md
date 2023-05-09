@@ -186,7 +186,7 @@ Si misurino i tempi di risposta variando il valore di `k`, per ciascuno dei tre 
 ### Condizioni per la consegna:
 
 - Creare una sottocartella chiamata `ex1` all'interno del repository.
-- La consegna deve obbligatoriamente contenere un `Makefile`. Il `Makefile` deve produrre all'interno di `ex1/build` un file eseguibile chiamato `main_ex1`.
+- La consegna deve obbligatoriamente contenere un `Makefile`. Il `Makefile` deve produrre all'interno di `ex1/bin` un file eseguibile chiamato `main_ex1`.
 - L'eseguibile `main_ex1` deve ricevere come parametri il percorso del file CSV contenente i record da ordinare, il percorso del file in cui salvare i record ordinati, il valore di `k` e il valore del campo `field` da utilizzare per l'ordinamento. Per esempio:
 
 ```
@@ -357,7 +357,7 @@ Si sperimenti il funzionamento dell'applicazione considerando diversi valori per
 ### Condizioni per la consegna:
 
 - Creare una sottocartella chiamata `ex2` all'interno del repository.
-- La consegna deve obbligatoriamente contenere un `Makefile`. Il `Makefile` deve produrre all'interno di `ex2/build` un file eseguibile chiamato `main_ex2`.
+- La consegna deve obbligatoriamente contenere un `Makefile`. Il `Makefile` deve produrre all'interno di `ex2/bin` un file eseguibile chiamato `main_ex2`.
 - `main_ex2` deve ricevere come parametri il percorso del dizionario da usare come riferimento e il file da correggere, in quest'ordine. Il risultato va stampato a schermo, con le parole ordinate come nel file da correggere. Per esempio:
 
 ```
@@ -367,7 +367,6 @@ perpeteva
 squola
 domandrono
 vuolessi
-scrissi
 corpito
 wita
 ```
