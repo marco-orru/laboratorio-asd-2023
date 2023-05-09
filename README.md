@@ -358,10 +358,10 @@ Si sperimenti il funzionamento dell'applicazione considerando diversi valori per
 
 - Creare una sottocartella chiamata `ex2` all'interno del repository.
 - La consegna deve obbligatoriamente contenere un `Makefile`. Il `Makefile` deve produrre all'interno di `ex2/bin` un file eseguibile chiamato `main_ex2`.
-- `main_ex2` deve ricevere come parametri il percorso del dizionario da usare come riferimento e il file da correggere, in quest'ordine. Il risultato va stampato a schermo, con le parole ordinate come nel file da correggere. Per esempio:
+- `main_ex2` deve ricevere come parametri il percorso del dizionario da usare come riferimento, il file da correggere, e la massima altezza `max_height`, in quest'ordine. Il risultato va stampato a schermo, con le parole ordinate come nel file da correggere. Per esempio:
 
 ```
-$ ./main_ex2 /tmp/data/dictionary.txt /tmp/data/correctme.txt
+$ ./main_ex2 /tmp/data/dictionary.txt /tmp/data/correctme.txt 2
 cinqve
 perpeteva
 squola
