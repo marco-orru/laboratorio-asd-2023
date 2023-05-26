@@ -435,9 +435,9 @@ public interface AbstractGraph<V,L> {
   public boolean removeEdge(V a, V b); // rimuove un arco dal grafo -- O(1) (*)
   public int numNodes(); // numero di nodi -- O(1)
   public int numEdges(); // numero di archi -- O(N)
-  public AbstractCollection<V> getNodes(); // recupero dei nodi del grafo -- O(N)
-  public AbstractCollection<AbstractEdge<V,L>> getEdges(); // recupero degli archi del grafo -- O(N)
-  public AbstractCollection<V> getNeighbours(V a); // recupero dei nodi adiacenti ad un dato nodo -- O(1) (*)
+  public Collection<V> getNodes(); // recupero dei nodi del grafo -- O(N)
+  public Collection<? extends AbstractEdge<V,L>> getEdges(); // recupero degli archi del grafo -- O(N)
+  public Collection<V> getNeighbours(V a); // recupero dei nodi adiacenti ad un dato nodo -- O(1) (*)
   public L getLabel(V a, V b); // recupero dell'etichetta di un arco -- O(1) (*)
 };
 ```
@@ -480,7 +480,7 @@ Si implementi l'algoritmo di Prim per la determinazione della minima foresta ric
 
 ```
 public class Prim {
-  public static <V,L> AbstractCollection<AbstractEdge<V,L>> minimumSpanningForest(Graph<V,L> graph) {
+  public static <V, L extends Number> Collection<? extends AbstractEdge<V, L>> minimumSpanningForest(Graph<V, L> graph) {
     // calcola la minima foresta ricoprente con l'algoritmo di Prim
     // restituisce la collezione degli archi che formano la foresta
   }
