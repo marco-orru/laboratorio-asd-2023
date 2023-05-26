@@ -480,11 +480,16 @@ Si implementi l'algoritmo di Prim per la determinazione della minima foresta ric
 
 ```
 public class Prim {
+  public static AbstractCollection<AbstractEdge<V,L>> minimumSpanningForest(Graph<V,L> graph) {
+    // calcola la minima foresta ricoprente con l'algoritmo di Prim
+    // restituisce la collezione degli archi che formano la foresta
+  }
   public static void main(String[] args) {
     // leggi i dati CSV del grafo dal percorso in args[1] 
-    // calcola la minima foresta ricoprente con l'algoritmo di Prim
-    // scrivi su standard output una descrizione della foresta calcolata come CSV con formato analogo a quello in input
-    // ai fini della correzione automatica, scrivere gli archi in output di modo che la partenza sia lessicograficamente minore della destinazione
+    // calcola la minima foresta ricoprente con minimumSpanningForest
+    // scrivi su standard output solo la descrizione della foresta calcolata come CSV con formato analogo a quello in input
+    // su standard error si possono scrivere ulteriori informazioni, come il numero di nodi e archi nella foresta calcolata,
+    // o il peso totale della foresta
   }
 }
 ```
