@@ -480,7 +480,7 @@ Si implementi l'algoritmo di Prim per la determinazione della minima foresta ric
 
 ```
 public class Prim {
-  public static AbstractCollection<AbstractEdge<V,L>> minimumSpanningForest(Graph<V,L> graph) {
+  public static <V,L> AbstractCollection<AbstractEdge<V,L>> minimumSpanningForest(Graph<V,L> graph) {
     // calcola la minima foresta ricoprente con l'algoritmo di Prim
     // restituisce la collezione degli archi che formano la foresta
   }
