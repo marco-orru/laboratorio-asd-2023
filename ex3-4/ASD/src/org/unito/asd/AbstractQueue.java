@@ -20,10 +20,11 @@ public interface AbstractQueue<E> {
   boolean empty();
 
   /**
-   * Adds an element to the queue.
+   * Pushes an element onto the queue.
    *
-   * @param element The element to be added.
-   * @return {@code true} if the element is successfully added, {@code false} otherwise.
+   * @param element The element to be pushed.
+   * @return {@code true} if the element is successfully pushed, {@code false} otherwise.
+   * @implSpec This operation shall have logarithmic time complexity O(log N).
    */
   boolean push(E element);
 

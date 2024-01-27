@@ -3,9 +3,7 @@ package org.unito.asd;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Represents a generic priority queue.
@@ -14,7 +12,8 @@ import java.util.Map;
  * @implNote The priority queue is implemented using a max-heap.
  */
 public final class PriorityQueue<E> implements AbstractQueue<E> {
-  private final MaxHeap<E> heap;
+  private final Comparator<E> comparator;
+  private final List<E> heap;
   private final Map<E, Integer> indexMap;
 
   /**
@@ -23,7 +22,8 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
    * @param comparator The comparator used to compare elements priority in the priority queue.
    */
   public PriorityQueue(Comparator<E> comparator) {
-    this.heap = new MaxHeap<>(comparator);
+    this.comparator = comparator;
+    this.heap = new ArrayList<>();
     this.indexMap = new HashMap<>();
   }
 
@@ -35,9 +35,16 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
    */
   @Override
   public boolean empty() {
-    return heap.empty();
+    return heap.isEmpty();
   }
 
+  /**
+   * Pushes an element onto the priority queue.
+   *
+   * @param element The element to be pushed.
+   * @return {@code true} if the element is successfully pushed, {@code false} otherwise.
+   * @implNote This operation have logarithmic time complexity O(log N).
+   */
   @Override
   public boolean push(@NotNull E element) {  // TODO
     return false;
@@ -64,7 +71,10 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
    */
   @Override
   public @Nullable E top() {
-    return heap.root();
+    if (empty())
+      return null;
+
+    return heap.getFirst();
   }
 
   @Override
