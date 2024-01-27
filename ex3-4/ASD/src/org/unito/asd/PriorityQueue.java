@@ -43,6 +43,7 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
    * Pushes an element onto the priority queue.
    * The element shall not be {@code null}.
    * An element is not pushed when it is already present in the priority queue.
+   *
    * @param element The element to be pushed.
    * @return {@code true} if the element is successfully pushed, {@code false} otherwise.
    * @implNote This operation has logarithmic time complexity O(log N).
@@ -93,7 +94,8 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
 
   /**
    * Removes the element at the top of the priority queue.
-   * @exception NoSuchElementException If the priority queue is empty.
+   *
+   * @throws NoSuchElementException If the priority queue is empty.
    * @implSpec This operation has logarithmic time complexity O(log N).
    */
   @SuppressWarnings("DataFlowIssue")  // top() is always NotNull if do an empty() check.

@@ -47,6 +47,7 @@ public interface AbstractQueue<E> {
 
   /**
    * Removes the element at the top of the queue.
+   *
    * @implSpec This operation shall have logarithmic time complexity O(log N).
    */
   void pop();
