@@ -1,6 +1,7 @@
 package org.unito.asd;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -39,13 +40,20 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
         return false;
     }
 
+    /**
+     * Checks whether a specific element is present in the priority queue or not.
+     * The element shall not be {@code null}.
+     * @param element The element to check for existence.
+     * @return {@code true} if the element is present, {@code false} otherwise.
+     * @implNote This operation has constant time complexity O(1).
+     */
     @Override
-    public boolean contains(@NotNull E element) {  // TODO
-        return false;
+    public boolean contains(@NotNull E element) {
+        return indexMap.containsKey(element);
     }
 
     @Override
-    public E top() {  // TODO
+    public @Nullable E top() {  // TODO
         return null;
     }
 
