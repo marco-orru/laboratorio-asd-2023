@@ -9,7 +9,7 @@ import java.util.Map;
  * @param <E> The type of elements in the priority queue.
  * @implNote The priority queue is implemented using a max-heap.
  */
-public final  class PriorityQueue<E> {
+public final class PriorityQueue<E> {
     private final MaxHeap<E> heap;
     private final Map<E, Integer> indexMap;
 
