@@ -19,6 +19,7 @@ public interface AbstractQueue<E> {
      * Adds an element to the queue.
      * @param element The element to be added.
      * @return {@code true} if the element is successfully added, {@code false} otherwise.
+     * @implSpec This operation shall have constant time complexity O(1).
      */
     boolean push(@NotNull E element);
 

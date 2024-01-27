@@ -24,9 +24,14 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
         this.indexMap = new HashMap<>();
     }
 
+    /**
+     * Checks whether the priority queue is empty or not.
+     * @return {@code true} if the priority queue is empty, {@code false} otherwise.
+     * @implNote This operation has constant time complexity O(1).
+     */
     @Override
-    public boolean empty() {  // TODO
-        return false;
+    public boolean empty() {
+        return heap.empty();
     }
 
     @Override

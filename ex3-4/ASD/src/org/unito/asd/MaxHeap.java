@@ -1,5 +1,7 @@
 package org.unito.asd;
 
+import org.jetbrains.annotations.Contract;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -19,5 +21,15 @@ public final class MaxHeap<E> {
     public MaxHeap(Comparator<E> comparator) {
         this.comparator = comparator;
         this.heapArray = new ArrayList<>();
+    }
+
+    /**
+     * Checks whether the max-heap is empty or not.
+     * @return {@code true} if the max-heap is empty, {@code false} otherwise.
+     * @implNote This operation has constant time complexity O(1).
+     */
+    @Contract(pure = true)
+    public boolean empty() {
+        return heapArray.isEmpty();
     }
 }
