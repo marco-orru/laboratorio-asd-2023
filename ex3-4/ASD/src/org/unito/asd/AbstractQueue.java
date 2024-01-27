@@ -49,14 +49,16 @@ public interface AbstractQueue<E> {
 
   /**
    * Removes the element at the top of the queue.
+   * @implSpec This operation shall have logarithmic time complexity O(log N).
    */
   void pop();
 
   /**
-   * Removes a specific element from the queue.
+   * Removes the specified element from the queue.
    *
    * @param element The element to be removed.
    * @return {@code true} if the element is successfully removed, {@code false} otherwise.
+   * @implSpec This operation shall have logarithmic time complexity O(log N).
    */
   boolean remove(E element);
 }
