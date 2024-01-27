@@ -34,7 +34,6 @@ public interface AbstractQueue<E> {
      * Accesses the element at the top of the queue without removing it.
      * @return The element at the top of the queue.
      */
-    @NotNull
     @Contract(pure = true)
     E top();
 
