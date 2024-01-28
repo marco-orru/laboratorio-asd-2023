@@ -273,11 +273,11 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
   // PURPOSE: Performs a descending heapify operation on the heap from the specific index, using min-heap policy.
   private void heapifyDownMin(int fromIndex) {
     if (fromIndex < heap.size()) {
-      var maxIndex = minParentChildren(fromIndex);
+      var minIndex = minParentChildren(fromIndex);
 
-      if (maxIndex != fromIndex) {
-        swapNodes(fromIndex, maxIndex);
-        heapifyDownMin(maxIndex);
+      if (minIndex != fromIndex) {
+        swapNodes(fromIndex, minIndex);
+        heapifyDownMin(minIndex);
       }
     }
   }
@@ -303,11 +303,11 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
   // PURPOSE: Performs an ascending heapify operation on the heap from the specific index, using min-heap policy.
   private void heapifyUpMin(int fromIndex) {
     if (fromIndex > 0) {
-      var maxIndex = minChildrenParent(fromIndex);
+      var minIndex = minChildrenParent(fromIndex);
 
-      if (maxIndex != fromIndex) {
-        swapNodes(fromIndex, maxIndex);
-        heapifyUpMin(maxIndex);
+      if (minIndex != fromIndex) {
+        swapNodes(fromIndex, minIndex);
+        heapifyUpMin(minIndex);
       }
     }
   }
