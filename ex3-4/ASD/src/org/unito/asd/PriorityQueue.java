@@ -15,17 +15,43 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
   private final Comparator<E> comparator;
   private final List<E> heap;
   private final Map<E, Integer> indexMap;
+  private final boolean useMinHeap;
 
   /**
    * Constructs a new {@link PriorityQueue} with the given comparator.
    * The provided comparator shall not be {@code null}.
+   * The underlying array is treated as a max-heap.
    *
    * @param comparator The comparator used to compare elements priority in the priority queue.
    */
   public PriorityQueue(@NotNull Comparator<E> comparator) {
+    this(comparator, false);
+  }
+
+  /**
+   * Constructs a new {@link PriorityQueue} with the given comparator and heap policy.
+   * The provided comparator shall not be {@code null}.
+   * The heap policy specifies how the underlying array will be treated:
+   * <br/>
+   * <list type="bullet">
+   * <li>
+   * if {@code useMinHeap} is {@code true}, the priority queue will be implemented through a min-heap,
+   * where the element with the minimum priority is at the front;
+   * </li>
+   * <li>
+   * if {@code useMinHeap} is {@code false}, the priority queue will be implemented through a max-heap,
+   * where the element with the maximum priority is at the front.
+   * </li>
+   * </list>
+   *
+   * @param comparator The comparator used to compare elements priority in the priority queue.
+   * @param useMinHeap A boolean flag indicating the heap policy.
+   */
+  public PriorityQueue(@NotNull Comparator<E> comparator, boolean useMinHeap) {
     this.comparator = Objects.requireNonNull(comparator);
     this.heap = new ArrayList<>();
     this.indexMap = new HashMap<>();
+    this.useMinHeap = useMinHeap;
   }
 
   /**
@@ -117,7 +143,7 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
    * @implNote This operation has logarithmic time complexity O(log N).
    */
   @Override
-  public boolean remove(@NotNull E element) {  // TODO
+  public boolean remove(@NotNull E element) {
     if (!contains(element))
       return false;
 
@@ -192,9 +218,26 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
     return max;
   }
 
+  // PURPOSE: Returns the min node index between the provided parent node index and its children.
+  private int minParentChildren(int parentIndex) {
+    assert parentIndex >= 0 && parentIndex < heap.size() : "Parent index out of heap bounds";
+
+    var min = parentIndex;
+
+    var leftIndex = getLeftIndex(parentIndex);
+    if (comparator.compare(heap.get(leftIndex), heap.get(min)) < 0)
+      min = leftIndex;
+
+    var rightIndex = getRightIndex(parentIndex);
+    if (comparator.compare(heap.get(rightIndex), heap.get(min)) < 0)
+      min = rightIndex;
+
+    return min;
+  }
+
   // PURPOSE: Returns the max node index between the provided children node index and its parent.
   private int maxChildrenParent(int childrenIndex) {
-    assert childrenIndex >= 0 && childrenIndex < heap.size() : "Parent index out of heap bounds";
+    assert childrenIndex >= 0 && childrenIndex < heap.size() : "Children index out of heap bounds";
 
     var max = childrenIndex;
 
@@ -205,26 +248,75 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
     return max;
   }
 
+  // PURPOSE: Returns the min node index between the provided children node index and its parent.
+  private int minChildrenParent(int childrenIndex) {
+    assert childrenIndex >= 0 && childrenIndex < heap.size() : "Children index out of heap bounds";
+
+    var min = childrenIndex;
+
+    var parentIndex = getParentIndex(childrenIndex);
+    if (comparator.compare(heap.get(parentIndex), heap.get(min)) < 0)
+      min = parentIndex;
+
+    return min;
+  }
+
   // PURPOSE: Performs a descending heapify operation on the heap from the specific index.
   private void heapifyDown(int fromIndex) {
+    if (useMinHeap) heapifyDownMin(fromIndex);
+    else heapifyDownMax(fromIndex);
+  }
+
+  // PURPOSE: Performs a descending heapify operation on the heap from the specific index, using min-heap policy.
+  private void heapifyDownMin(int fromIndex) {
+    if (fromIndex < heap.size()) {
+      var maxIndex = minParentChildren(fromIndex);
+
+      if (maxIndex != fromIndex) {
+        swapNodes(fromIndex, maxIndex);
+        heapifyDownMin(maxIndex);
+      }
+    }
+  }
+
+  // PURPOSE: Performs a descending heapify operation on the heap from the specific index, using max-heap policy.
+  private void heapifyDownMax(int fromIndex) {
     if (fromIndex < heap.size()) {
       var maxIndex = maxParentChildren(fromIndex);
 
       if (maxIndex != fromIndex) {
         swapNodes(fromIndex, maxIndex);
-        heapifyDown(maxIndex);
+        heapifyDownMax(maxIndex);
       }
     }
   }
 
   // PURPOSE: Performs an ascending heapify operation on the heap from the specific index.
   private void heapifyUp(int fromIndex) {
+    if (useMinHeap) heapifyUpMin(fromIndex);
+    else heapifyUpMax(fromIndex);
+  }
+
+  // PURPOSE: Performs an ascending heapify operation on the heap from the specific index, using min-heap policy.
+  private void heapifyUpMin(int fromIndex) {
+    if (fromIndex > 0) {
+      var maxIndex = minChildrenParent(fromIndex);
+
+      if (maxIndex != fromIndex) {
+        swapNodes(fromIndex, maxIndex);
+        heapifyUpMin(maxIndex);
+      }
+    }
+  }
+
+  // PURPOSE: Performs an ascending heapify operation on the heap from the specific index, using max-heap policy.
+  private void heapifyUpMax(int fromIndex) {
     if (fromIndex > 0) {
       var maxIndex = maxChildrenParent(fromIndex);
 
       if (maxIndex != fromIndex) {
         swapNodes(fromIndex, maxIndex);
-        heapifyUp(maxIndex);
+        heapifyUpMax(maxIndex);
       }
     }
   }
