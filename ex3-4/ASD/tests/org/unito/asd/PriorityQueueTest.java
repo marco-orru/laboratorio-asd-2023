@@ -42,6 +42,10 @@ class PriorityQueueTest {
 
   @Test
   void top() {
+    assertNull(priorityQueue.top());
+    priorityQueue.push(7);
+    priorityQueue.push(3);
+    assertEquals(7, priorityQueue.top());
   }
 
   @Test
