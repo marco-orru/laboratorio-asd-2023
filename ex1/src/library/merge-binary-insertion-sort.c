@@ -1,6 +1,7 @@
 #include <memory.h>
 #include <malloc.h>
 #include <mem.h>
+#include <assert.h>
 #include "merge-binary-insertion-sort.h"
 
 //---------------------------------------------------------------------------------------------\\
@@ -77,7 +78,66 @@ static void binary_insertion_sort(void* base, size_t count, size_t size, compare
 
 //---------------------------------------------------------------------------------------------\\
 
-void merge_binary_insertion_sort(void *base, size_t count, size_t size, size_t threshold, compare_fn compare) {
-    binary_insertion_sort(base, count, size, compare);
-    // TODO...
+// PURPOSE: Merges two sorted arrays into one.
+static void merge(void * l_base, size_t l_count, void* r_base, size_t r_count, size_t size, compare_fn compare) {
+    void* res, *src;
+    size_t res_size, l_idx, r_idx, res_idx;
+
+    res_size = (l_count + r_count) * size;
+    res = malloc(res_size);
+
+    l_idx = r_idx = res_idx = 0;
+
+    while (l_idx < l_count && r_idx < r_count) {
+        if (compare(GET_ELEMENT(l_base, l_idx, size), GET_ELEMENT(r_base, r_idx, size)) >= 0) {
+            src = GET_ELEMENT(l_base, l_idx++, size);
+        } else {
+            src = GET_ELEMENT(r_base, r_idx++, size);
+        }
+
+        memcpy(GET_ELEMENT(res, res_idx, size), src, size);
+    }
+
+    while (l_idx < l_count)
+        memcpy(GET_ELEMENT(res, res_idx++, size), GET_ELEMENT(l_base, l_idx++, size), size);
+
+    while (r_idx < r_count)
+        memcpy(GET_ELEMENT(res, res_idx++, size), GET_ELEMENT(r_base, r_idx++, size), size);
+
+    memcpy(l_base, res, res_size);
+    free(res);
 }
+
+//---------------------------------------------------------------------------------------------\\
+
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "misc-no-recursion"
+
+void merge_binary_insertion_sort(void *base, size_t count, size_t size, size_t threshold, compare_fn compare) {
+    size_t half;
+    void *half_base;
+
+    assert(base);
+    assert(count > 0);
+    assert(compare);
+    assert(size > 0);
+    assert(threshold > 0);
+
+    if (count == 1)
+        return;
+
+    if (count <= threshold) {
+        binary_insertion_sort(base, count, size, compare);
+        return;
+    }
+
+    half = count / 2;
+    half_base = GET_ELEMENT(base, half, size);
+
+    merge_binary_insertion_sort(base, half, size, threshold, compare);
+    merge_binary_insertion_sort(base, count - half, size, threshold, compare);
+
+    merge(base, half, half_base, count - half, size, compare);
+}
+
+#pragma clang diagnostic pop
