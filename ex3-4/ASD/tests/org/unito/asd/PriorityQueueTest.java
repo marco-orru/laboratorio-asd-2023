@@ -50,6 +50,14 @@ class PriorityQueueTest {
 
   @Test
   void pop() {
+    priorityQueue.push(8);
+    priorityQueue.push(2);
+    priorityQueue.push(5);
+    assertEquals(8, priorityQueue.top());
+    priorityQueue.pop();
+    assertEquals(5, priorityQueue.top());
+    priorityQueue.pop();
+    assertEquals(2, priorityQueue.top());
   }
 
   @Test
