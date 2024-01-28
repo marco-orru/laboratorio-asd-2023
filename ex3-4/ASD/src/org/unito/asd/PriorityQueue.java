@@ -1,5 +1,6 @@
 package org.unito.asd;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,7 +49,7 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
    * @param useMinHeap A boolean flag indicating the heap policy.
    */
   public PriorityQueue(@NotNull Comparator<E> comparator, boolean useMinHeap) {
-    this.comparator = Objects.requireNonNull(comparator);
+    this.comparator = comparator;
     this.heap = new ArrayList<>();
     this.indexMap = new HashMap<>();
     this.useMinHeap = useMinHeap;
@@ -61,6 +62,7 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
    * @implNote This operation has constant time complexity O(1).
    */
   @Override
+  @Contract(pure = true)
   public boolean empty() {
     return heap.isEmpty();
   }
@@ -75,9 +77,8 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
    * @implNote This operation has logarithmic time complexity O(log N).
    */
   @Override
+  @Contract(mutates = "this")
   public boolean push(@NotNull E element) {
-    Objects.requireNonNull(element);
-
     if (contains(element))
       return false;
 
@@ -97,9 +98,8 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
    * @implNote This operation has constant time complexity O(1).
    */
   @Override
+  @Contract(pure = true)
   public boolean contains(@NotNull E element) {
-    Objects.requireNonNull(element);
-
     return indexMap.containsKey(element);
   }
 
@@ -110,6 +110,7 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
    * @implNote This operation has constant time complexity O(1).
    */
   @Override
+  @Contract(pure = true)
   public @Nullable E top() {
     if (empty())
       return null;
@@ -126,6 +127,7 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
    */
   @SuppressWarnings("DataFlowIssue")  // top() is always NotNull if do an empty() check.
   @Override
+  @Contract(mutates = "this")
   public void pop() {
     if (empty())
       throw new NoSuchElementException("Cannot pop from an empty priority list");
@@ -143,6 +145,7 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
    * @implNote This operation has logarithmic time complexity O(log N).
    */
   @Override
+  @Contract(mutates = "this")
   public boolean remove(@NotNull E element) {
     if (!contains(element))
       return false;

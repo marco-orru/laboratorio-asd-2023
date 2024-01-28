@@ -24,6 +24,7 @@ public interface AbstractQueue<E> {
    * @return {@code true} if the element is successfully pushed, {@code false} otherwise.
    * @implSpec This operation shall have logarithmic time complexity O(log N).
    */
+  @Contract(mutates = "this")
   boolean push(E element);
 
   /**
@@ -50,6 +51,7 @@ public interface AbstractQueue<E> {
    *
    * @implSpec This operation shall have logarithmic time complexity O(log N).
    */
+  @Contract(mutates = "this")
   void pop();
 
   /**
@@ -59,5 +61,6 @@ public interface AbstractQueue<E> {
    * @return {@code true} if the element is successfully removed, {@code false} otherwise.
    * @implSpec This operation shall have logarithmic time complexity O(log N).
    */
+  @Contract(mutates = "this")
   boolean remove(E element);
 }
