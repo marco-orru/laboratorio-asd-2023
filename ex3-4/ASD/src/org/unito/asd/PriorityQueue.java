@@ -163,16 +163,12 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
 
   // PURPOSE: Gets the parent node index of a specific node, given its index.
   private int getParentIndex(int nodeIndex) {
-    assert nodeIndex >= 0 && nodeIndex < heap.size() : "Node index out of heap bounds";
-
     return (nodeIndex - 1) / 2;
   }
 
   // PURPOSE: Gets the left child node index of a specific parent node, given its index.
   // NOTE: If the parent has not a left child, returns the parent index.
   private int getLeftIndex(int parentIndex) {
-    assert parentIndex >= 0 && parentIndex < heap.size() : "Parent index out of heap bounds";
-
     var res = 2 * parentIndex + 1;
     return res < heap.size() ? res : parentIndex;
   }
@@ -180,8 +176,6 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
   // PURPOSE: Gets the right child node index of a specific parent node, given its index.
   // NOTE: If the parent has not a right child, returns the parent index.
   private int getRightIndex(int parentIndex) {
-    assert parentIndex >= 0 && parentIndex < heap.size() : "Parent index out of heap bounds";
-
     var res = 2 * parentIndex + 2;
     return res < heap.size() ? res : parentIndex;
   }
@@ -189,9 +183,6 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
   // PURPOSE: Swaps two nodes given their indexes.
   // NOTE: If the two indexes are the same, no operation is being performed.
   private void swapNodes(int sourceIndex, int destinationIndex) {
-    assert sourceIndex >= 0 && sourceIndex < heap.size() : "Source index out of heap bounds";
-    assert destinationIndex >= 0 && destinationIndex < heap.size() : "Destination index out of heap bounds";
-
     if (sourceIndex == destinationIndex)
       return;
 
@@ -205,8 +196,6 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
 
   // PURPOSE: Returns the max node index between the provided parent node index and its children.
   private int maxParentChildren(int parentIndex) {
-    assert parentIndex >= 0 && parentIndex < heap.size() : "Parent index out of heap bounds";
-
     var max = parentIndex;
 
     var leftIndex = getLeftIndex(parentIndex);
@@ -222,8 +211,6 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
 
   // PURPOSE: Returns the min node index between the provided parent node index and its children.
   private int minParentChildren(int parentIndex) {
-    assert parentIndex >= 0 && parentIndex < heap.size() : "Parent index out of heap bounds";
-
     var min = parentIndex;
 
     var leftIndex = getLeftIndex(parentIndex);
@@ -239,8 +226,6 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
 
   // PURPOSE: Returns the max node index between the provided children node index and its parent.
   private int maxChildrenParent(int childrenIndex) {
-    assert childrenIndex >= 0 && childrenIndex < heap.size() : "Children index out of heap bounds";
-
     var max = childrenIndex;
 
     var parentIndex = getParentIndex(childrenIndex);
@@ -252,8 +237,6 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
 
   // PURPOSE: Returns the min node index between the provided children node index and its parent.
   private int minChildrenParent(int childrenIndex) {
-    assert childrenIndex >= 0 && childrenIndex < heap.size() : "Children index out of heap bounds";
-
     var min = childrenIndex;
 
     var parentIndex = getParentIndex(childrenIndex);
