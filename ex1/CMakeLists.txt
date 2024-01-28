@@ -9,6 +9,8 @@ set(EXC_NAME "main_ex1")
 
 add_library(${LIB_NAME} STATIC
         src/library/merge-binary-insertion-sort.c
+        src/library/csv.c
+        src/library/file-sorter.c
 )
 
 add_executable(${EXC_NAME}

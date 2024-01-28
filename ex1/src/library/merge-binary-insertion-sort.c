@@ -13,7 +13,7 @@
 
 // PURPOSE: Perform binary search on a sorted array to find the correct position for an element.
 // NOTE: The sorted array is the sub-array with [0, upper - 1] bounds of the base array, which has [0, size - 1] bounds.
-static size_t binary_search(void* base, size_t size, void* elem, size_t upper, compare_fn compare) {
+static size_t binary_search(void *base, size_t size, void *elem, size_t upper, compare_fn compare) {
     size_t half, lower;
     void *half_elem;
     int cmp_res;
@@ -34,14 +34,14 @@ static size_t binary_search(void* base, size_t size, void* elem, size_t upper, c
     }
 
     return compare(elem, GET_ELEMENT(base, lower, size)) > 0
-        ? lower + 1
-        : lower;
+           ? lower + 1
+           : lower;
 }
 
 //---------------------------------------------------------------------------------------------\\
 
 // PURPOSE: Shifts to the right by one position the items in range [insert_ids, from_idx - 1].
-static void* shift_right(void *base, size_t size, size_t insert_idx, size_t from_idx) {
+static void *shift_right(void *base, size_t size, size_t insert_idx, size_t from_idx) {
     void *pivot, *pivot_dest;
     size_t shift_sz;
 
@@ -58,9 +58,9 @@ static void* shift_right(void *base, size_t size, size_t insert_idx, size_t from
 
 // PURPOSE: Sorts the given array using the binary insertion sort algorithm, using the specified compare function to
 //          compare elements.
-static void binary_insertion_sort(void* base, size_t count, size_t size, compare_fn compare) {
+static void binary_insertion_sort(void *base, size_t count, size_t size, compare_fn compare) {
     size_t i, new_pos;
-    void* current_elem, *src_elem, *dst_elem;
+    void *current_elem, *src_elem, *dst_elem;
 
     src_elem = malloc(size);
 
@@ -79,8 +79,8 @@ static void binary_insertion_sort(void* base, size_t count, size_t size, compare
 //---------------------------------------------------------------------------------------------\\
 
 // PURPOSE: Merges two sorted arrays into one.
-static void merge(void * l_base, size_t l_count, void* r_base, size_t r_count, size_t size, compare_fn compare) {
-    void* res, *src;
+static void merge(void *l_base, size_t l_count, void *r_base, size_t r_count, size_t size, compare_fn compare) {
+    void *res, *src;
     size_t res_size, l_idx, r_idx, res_idx;
 
     res_size = (l_count + r_count) * size;
@@ -144,9 +144,9 @@ void merge_binary_insertion_sort(void *base, size_t count, size_t size, size_t t
 
 //---------------------------------------------------------------------------------------------\\
 
-static int int_comparator_fn(const void* left, const void* right) {
-    int a = *(int*)left;
-    int b = *(int*)right;
+static int int_comparator_fn(const void *left, const void *right) {
+    int a = *(int *) left;
+    int b = *(int *) right;
 
     if (a > b) return 1;
     if (a < b) return -1;
@@ -155,9 +155,9 @@ static int int_comparator_fn(const void* left, const void* right) {
 
 //---------------------------------------------------------------------------------------------\\
 
-static int float_comparator_fn(const void* left, const void* right) {
-    float a = *(float *)left;
-    float b = *(float *)right;
+static int float_comparator_fn(const void *left, const void *right) {
+    float a = *(float *) left;
+    float b = *(float *) right;
 
     if (a > b) return 1;
     if (a < b) return -1;
@@ -166,9 +166,9 @@ static int float_comparator_fn(const void* left, const void* right) {
 
 //---------------------------------------------------------------------------------------------\\
 
-static int string_comparator_fn(const void* left, const void* right) {
-    char* a = (char*)left;
-    char* b = (char*)right;
+static int string_comparator_fn(const void *left, const void *right) {
+    char *a = (char *) left;
+    char *b = (char *) right;
 
     return strcmp(a, b);
 }

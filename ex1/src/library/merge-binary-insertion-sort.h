@@ -1,4 +1,5 @@
 #pragma once
+
 #include <stddef.h>
 
 /**
@@ -16,7 +17,7 @@
  * @param b Pointer to the second element for comparison.
  * @return An integer representing the comparison result.
  */
-typedef int (*compare_fn)(const void*, const void*);
+typedef int (*compare_fn)(const void *, const void *);
 
 /**
  * @brief Perform a hybrid sorting algorithm that combines binary insertion sort and merge sort over an array of
