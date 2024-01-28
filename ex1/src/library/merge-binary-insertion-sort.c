@@ -141,3 +141,40 @@ void merge_binary_insertion_sort(void *base, size_t count, size_t size, size_t t
 }
 
 #pragma clang diagnostic pop
+
+//---------------------------------------------------------------------------------------------\\
+
+static int int_comparator_fn(const void* left, const void* right) {
+    int a = *(int*)left;
+    int b = *(int*)right;
+
+    if (a > b) return 1;
+    if (a < b) return -1;
+    return 0;
+}
+
+//---------------------------------------------------------------------------------------------\\
+
+static int float_comparator_fn(const void* left, const void* right) {
+    float a = *(float *)left;
+    float b = *(float *)right;
+
+    if (a > b) return 1;
+    if (a < b) return -1;
+    return 0;
+}
+
+//---------------------------------------------------------------------------------------------\\
+
+static int string_comparator_fn(const void* left, const void* right) {
+    char* a = (char*)left;
+    char* b = (char*)right;
+
+    return strcmp(a, b);
+}
+
+//---------------------------------------------------------------------------------------------\\
+
+const compare_fn int_comparator = int_comparator_fn;
+const compare_fn float_comparator = float_comparator_fn;
+const compare_fn string_comparator = string_comparator_fn;
