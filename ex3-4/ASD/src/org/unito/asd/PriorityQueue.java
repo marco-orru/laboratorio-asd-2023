@@ -118,7 +118,6 @@ public final class PriorityQueue<E> implements AbstractQueue<E> {
     return heap.getFirst();
   }
 
-
   /**
    * Removes the element at the top of the priority queue.
    *
