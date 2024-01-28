@@ -26,6 +26,9 @@ class PriorityQueueTest {
 
   @Test
   void push() {
+    assertTrue(priorityQueue.push(1));
+    assertTrue(priorityQueue.push(2));
+    assertFalse(priorityQueue.push(2));
   }
 
   @Test
