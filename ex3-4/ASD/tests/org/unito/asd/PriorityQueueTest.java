@@ -33,6 +33,11 @@ class PriorityQueueTest {
 
   @Test
   void contains() {
+    assertFalse(priorityQueue.contains(10));
+    priorityQueue.push(10);
+    assertTrue(priorityQueue.contains(10));
+    priorityQueue.pop();
+    assertFalse(priorityQueue.contains(10));
   }
 
   @Test
