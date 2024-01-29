@@ -4,19 +4,44 @@
 #include "merge-binary-insertion-sort.h"
 #include "records-sorter.h"
 
-#define MACRO_START do
-#define MACRO_END while(0)
+//---------------------------------------------------------------------------------------------\\
 
-#define GET_STRING(records, i) (((char**)records)[(i)])
-#define GET_INTEGER(records, i) (((int*)records)[(i)])
-#define GET_FLOAT(records, i) (((float *)records)[(i)])
-
+// PURPOSE: The max length of a line.
 #define LINE_BUFFER_SIZE 128
 
-static void *alloc_records(FieldId fieldId) {
+//---------------------------------------------------------------------------------------------\\
+
+// PURPOSE: Gets the i-th element from the records array as a string.
+#define GET_STRING(records, i) (((char**)records)[(i)])
+
+// PURPOSE: Gets the i-th element from the records array as an integer.
+#define GET_INTEGER(records, i) (((int*)records)[(i)])
+
+// PURPOSE: Gets the i-th element from the records array as a floating-point number.
+#define GET_FLOAT(records, i) (((float *)records)[(i)])
+
+// PURPOSE: Saves the string 'str' inside the records array at the specified index, increasing it after the operation.
+#define LOAD_STRING(records, index, str)                                \
+do                                                             \
+{                                                                       \
+    GET_STRING(records, i) = calloc(strlen(field) + 1, sizeof(char));   \
+    strcpy(GET_STRING(records, i++), field);                            \
+}                                                                       \
+while(0)
+
+// PURPOSE: Saves the int 'integer' inside the records array at the specified index, increasing it after the operation.
+#define LOAD_INT(records, index, integer) (GET_INTEGER(records, index++) = atoi((integer)))
+
+// PURPOSE: Saves the float 'flt' inside the records array at the specified index, increasing it after the operation.
+#define LOAD_FLOAT(records, index, flt) (GET_FLOAT(records, index++) = atof((flt)))
+
+//---------------------------------------------------------------------------------------------\\
+
+// PURPOSE: Allocates the records array according to the field type.
+static void *alloc_records(FieldId field_id) {
     void *records;
 
-    switch (fieldId) {
+    switch (field_id) {
         case FIELD_STRING:
             records = malloc(sizeof(char *) * NUMBER_OF_RECORDS);
             break;
@@ -31,6 +56,9 @@ static void *alloc_records(FieldId fieldId) {
     return records;
 }
 
+//---------------------------------------------------------------------------------------------\\
+
+// PURPOSE: Frees the record array according to the field type.
 static void free_records(void *records, FieldId fieldId) {
     int i;
 
@@ -45,20 +73,12 @@ static void free_records(void *records, FieldId fieldId) {
     }
 }
 
-#define LOAD_STRING(records, index, str)                                \
-MACRO_START                                                             \
-{                                                                       \
-    GET_STRING(records, i) = calloc(strlen(field) + 1, sizeof(char));   \
-    strcpy(GET_STRING(records, i++), field);                            \
-}                                                                       \
-MACRO_END
-
-#define LOAD_INT(records, index, integer) (GET_INTEGER(records, index++) = atoi((integer)))
-#define LOAD_FLOAT(records, index, flt) (GET_FLOAT(records, index++) = atof((flt)))
+//---------------------------------------------------------------------------------------------\\
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cert-err34-c"
 
+// PURPOSE: Loads the record of the specified type from a file, and saves them into the records array.
 static void load_records(FILE *in_file, FieldId field_id, void *records) {
     char line_buffer[LINE_BUFFER_SIZE];
     char *field;
@@ -91,10 +111,9 @@ static void load_records(FILE *in_file, FieldId field_id, void *records) {
 
 #pragma clang diagnostic pop
 
-#undef LOAD_STRING
-#undef LOAD_INT
-#undef LOAD_FLOAT
+//---------------------------------------------------------------------------------------------\\
 
+// PURPOSE: Writes the records array into the specified file.
 static void store_records(FILE *out_file, FieldId field_id, void *records) {
     int i;
 
@@ -115,6 +134,9 @@ static void store_records(FILE *out_file, FieldId field_id, void *records) {
     }
 }
 
+//---------------------------------------------------------------------------------------------\\
+
+// PURPOSE: Sorts the records using the appropriate comparator function.
 static void sort(void *records, FieldId field_id, size_t threshold) {
     size_t elem_size;
     compare_fn compare_fn;
@@ -138,6 +160,8 @@ static void sort(void *records, FieldId field_id, size_t threshold) {
 
     merge_binary_insertion_sort(records, NUMBER_OF_RECORDS, elem_size, threshold, compare_fn);
 }
+
+//---------------------------------------------------------------------------------------------\\
 
 void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, FieldId field_id) {
     void *records;

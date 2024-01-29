@@ -3,13 +3,33 @@
 #include <stdio.h>
 
 #ifndef NUMBER_OF_RECORDS
+/**
+ * @brief Defines the default number of records present in the record file.
+ *
+ * @remark This number can be changed by setting this macro before including this header file.
+ */
 #define NUMBER_OF_RECORDS 20000000
 #endif
 
+/**
+ * @brief Defines the types of fields that can be read from the record file.
+ */
 typedef enum FieldId {
+    /** @brief Reads the string field. */
     FIELD_STRING,
+    /** @brief Reads the integer field */
     FIELD_INTEGER,
+    /** @brief Reads the float field */
     FIELD_FLOAT
 } FieldId;
 
-void sort_records(FILE *infile, FILE *outfile, size_t sorting_threshold, FieldId field_id);
+/**
+ * @brief Reads the records stored in the provided file, then sorts the fields of the specified type and saves the sorted
+ * records in another file.
+ *
+ * @param in_file The .csv file containing the records.
+ * @param out_file The .txt file in which the sorted records will be written.
+ * @param sorting_threshold The sorting threshold to be passed to the sorting algorithm.
+ * @param field_id The type of the fields to be sorted.
+ */
+void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, FieldId field_id);
