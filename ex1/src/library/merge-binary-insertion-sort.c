@@ -171,8 +171,8 @@ static int float_comparator_fn(const void *left, const void *right) {
 
 // PURPOSE: Compares two strings from two generic pointers.
 static int string_comparator_fn(const void *left, const void *right) {
-    char *a = (char *) left;
-    char *b = (char *) right;
+    char *a = *(char **) left;
+    char *b = *(char **) right;
 
     return strcmp(a, b);
 }
