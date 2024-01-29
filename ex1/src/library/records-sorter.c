@@ -12,13 +12,13 @@
 /*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Gets the i-th element from the records array as a string.
-#define GET_STRING(records, i) (((char**)records)[(i)])
+#define GET_STRING(records, i) (((char**)(records))[(i)])
 
 // PURPOSE: Gets the i-th element from the records array as an integer.
-#define GET_INTEGER(records, i) (((int*)records)[(i)])
+#define GET_INTEGER(records, i) (((int*)(records))[(i)])
 
 // PURPOSE: Gets the i-th element from the records array as a floating-point number.
-#define GET_FLOAT(records, i) (((float *)records)[(i)])
+#define GET_FLOAT(records, i) (((float *)(records))[(i)])
 
 // PURPOSE: Saves the string 'str' inside the records array at the specified index, increasing it after the operation.
 #define LOAD_STRING(records, index, str)                                \
@@ -30,10 +30,10 @@ do                                                             \
 while(0)
 
 // PURPOSE: Saves the int 'integer' inside the records array at the specified index, increasing it after the operation.
-#define LOAD_INT(records, index, integer) (GET_INTEGER(records, index++) = atoi((integer)))
+#define LOAD_INT(records, index, integer) (GET_INTEGER(records, (index)++) = atoi((integer)))
 
 // PURPOSE: Saves the float 'flt' inside the records array at the specified index, increasing it after the operation.
-#define LOAD_FLOAT(records, index, flt) (GET_FLOAT(records, index++) = atof((flt)))
+#define LOAD_FLOAT(records, index, flt) (GET_FLOAT(records, (index)++) = atof((flt)))
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -169,7 +169,7 @@ void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, Field
     assert(in_file);
     assert(out_file);
     assert(in_file != out_file);
-    assert(sorting_threshold > 0);
+    assert(sorting_threshold >= 0);
     assert(field_id >= FIELD_STRING && field_id <= FIELD_FLOAT);
 
     records = alloc_records(field_id);

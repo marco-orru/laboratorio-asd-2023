@@ -118,7 +118,7 @@ void merge_binary_insertion_sort(void *base, size_t count, size_t size, size_t t
     assert(count > 0);
     assert(compare);
     assert(size > 0);
-    assert(threshold > 0);
+    assert(threshold >= 0);
 
     if (count == 1)
         return;
