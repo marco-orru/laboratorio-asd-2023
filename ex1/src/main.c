@@ -4,6 +4,8 @@
 #include "records-sorter.h"
 
 #ifndef PROFILE_ONLY_SORTING
+// PURPOSE: When this is enabled, the profiler will profile only the execution of the sorting algorithm,
+//          and not the execution of the file reading and writing.
 #define PROFILE_ONLY_SORTING 1
 #endif
 
@@ -25,9 +27,8 @@
 #elif PROFILE_TEST == 1
 #define NUMBER_OF_THRESHOLDS 11
 #define PROFILE_THRESHOLDS {0, 5, 10, 20, 50, 80, 100, 500, 1000, 5000, 10000}
-#elif PROFILE_TEST == 2
-#define NUMBER_OF_THRESHOLDS 12
-#define PROFILE_THRESHOLDS {50, 80, 100, 150, 200, 250, 300, 350, 400, 450, 500, 750}
+#elif  // ADD OTHER TESTS HERE
+// ...
 #endif
 #else
 #error "No profiler test selected"

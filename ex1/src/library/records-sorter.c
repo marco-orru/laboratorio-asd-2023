@@ -155,6 +155,7 @@ void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, Field
     }
 #endif
 
+    load_records(in_file, records);
 
 #if ENABLE_PROFILER
     begin = clock();
