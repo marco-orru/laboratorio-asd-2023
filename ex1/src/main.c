@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+
 #include "records-sorter.h"
 
 #ifndef ENABLE_PROFILER
@@ -7,12 +8,16 @@
 #define ENABLE_PROFILER 0
 #endif
 
-#if ENABLE_PROFILER && !defined(PROFILE_TEST)
-// PURPOSE: When in profiling mode, selects the test to execute from the predefined tests.
-#define PROFILE_TEST 2
+#ifndef PROFILE_ONLY_SORTING
+#define PROFILE_ONLY_SORTING 1
 #endif
 
-#if ENABLE_PROFILER
+#if ENABLE_PROFILER && !defined(PROFILE_TEST)
+// PURPOSE: When in profiling mode, selects the test to execute from the predefined tests.
+#define PROFILE_TEST 1
+#endif
+
+#if ENABLE_PROFILER && !PROFILE_ONLY_SORTING
 #include <time.h>
 #endif
 
@@ -21,10 +26,10 @@
 #if !defined(NUMBER_OF_THRESHOLDS) && !defined(PROFILE_THRESHOLDS)
 #if PROFILE_TEST == 0
 #define NUMBER_OF_THRESHOLDS 1
-#define PROFILE_THRESHOLDS {0}
+#define PROFILE_THRESHOLDS {}
 #elif PROFILE_TEST == 1
-#define NUMBER_OF_THRESHOLDS 10
-#define PROFILE_THRESHOLDS {0, 5, 10, 20, 50, 80, 100, 500, 1000, 10000}
+#define NUMBER_OF_THRESHOLDS 12
+#define PROFILE_THRESHOLDS {0, 5, 10, 20, 50, 80, 100, 500, 1000, 10000, 100000, 1000000}
 #elif PROFILE_TEST == 2
 #define NUMBER_OF_THRESHOLDS 12
 #define PROFILE_THRESHOLDS {50, 80, 100, 150, 200, 250, 300, 350, 400, 450, 500, 750}
@@ -53,9 +58,9 @@ enum ARGS {
 //          in the specified file.
 static int process_file(const char *in_path, const char *out_path, size_t sorting_threshold, FieldId field_id) {
     FILE* in_file, *out_file;
-    char field_name[16];
-#if ENABLE_PROFILER
+#if ENABLE_PROFILER & !PROFILE_ONLY_SORTING
     clock_t begin, end;
+    char field_name[16];
 #endif
 
     in_file = fopen(in_path, "r");
@@ -73,6 +78,17 @@ static int process_file(const char *in_path, const char *out_path, size_t sortin
         return EXIT_FAILURE;
     }
 
+#if ENABLE_PROFILER && !PROFILE_ONLY_SORTING
+    begin = clock();
+#elif !ENABLE_PROFILER
+    printf("Sorting records...\n");
+#endif
+
+    sort_records(in_file, out_file, sorting_threshold, field_id);
+
+#if ENABLE_PROFILER && !PROFILE_ONLY_SORTING
+    end = clock();
+
     switch (field_id) {
         case FIELD_STRING:
             strcpy(field_name, "STRING");
@@ -85,21 +101,11 @@ static int process_file(const char *in_path, const char *out_path, size_t sortin
             break;
     }
 
-#if ENABLE_PROFILER
-    begin = clock();
-#else
-    printf("Sorting %s records using %zu sorting threshold...\n", field_name, sorting_threshold);
-#endif
-
-    sort_records(in_file, out_file, sorting_threshold, field_id);
-
-#if ENABLE_PROFILER
-    end = clock();
-    printf("[PROFILER] Records sorted [%s, THRESHOLD: %zu]. Elapsed time: %f seconds.\n",
+    printf("[PROFILER] Records loaded, sorted and saved [%s, THRESHOLD: %zu]. Elapsed time: %f seconds.\n",
            field_name,
            sorting_threshold,
            (double) (end - begin) / CLOCKS_PER_SEC);
-#else
+#elif !ENABLE_PROFILER
     printf("Records has been sorted and saved to the specified file.\n");
 #endif
 

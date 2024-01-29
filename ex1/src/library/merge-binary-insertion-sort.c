@@ -2,12 +2,28 @@
 #include <malloc.h>
 #include <mem.h>
 #include <assert.h>
+#include <stdio.h>
 #include "merge-binary-insertion-sort.h"
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Gets a pointer to the element at the specified index inside the specified array.
 #define GET_ELEMENT(base, index, size) ((void*)(((unsigned char*)(base)) + (index) * (size)))
+
+// PURPOSE: Prints an error message and aborts the program
+#define PRINT_ERROR(msg)    \
+do {                        \
+    fprintf(stderr, msg);   \
+    fflush(stderr);         \
+    abort();                \
+} while(0)
+
+// PURPOSE: Verifies that an unsafe function returns non-zero, or aborts if it returns zero.
+#define VERIFY(cmd)                                                 \
+do {                                                                \
+    if (!(cmd))                                                     \
+        PRINT_ERROR("[VERIFY_ERROR]: (" #cmd ") == FALSE");         \
+} while (0)
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -49,7 +65,7 @@ static void *shift_right(void *base, size_t size, size_t insert_idx, size_t from
     pivot_dest = GET_ELEMENT(base, insert_idx + 1, size);
 
     shift_sz = (from_idx - insert_idx) * size;
-    memmove(pivot_dest, pivot, shift_sz);
+    VERIFY(memmove(pivot_dest, pivot, shift_sz));
 
     return pivot;
 }
@@ -64,13 +80,15 @@ static void binary_insertion_sort(void *base, size_t count, size_t size, compare
 
     src_elem = malloc(size);
 
+    VERIFY(src_elem);
+
     for (i = 1; i < count; ++i) {
         current_elem = GET_ELEMENT(base, i, size);
         new_pos = binary_search(base, size, current_elem, i - 1, compare);
 
-        memcpy(src_elem, current_elem, size);
+        VERIFY(memcpy(src_elem, current_elem, size));
         dst_elem = shift_right(base, size, new_pos, i);
-        memcpy(dst_elem, src_elem, size);
+        VERIFY(memcpy(dst_elem, src_elem, size));
     }
 
     free(src_elem);
@@ -86,6 +104,8 @@ static void merge(void *l_base, size_t l_count, void *r_base, size_t r_count, si
     res_size = (l_count + r_count) * size;
     res = malloc(res_size);
 
+    VERIFY(res);
+
     l_idx = r_idx = res_idx = 0;
 
     while (l_idx < l_count && r_idx < r_count) {
@@ -95,16 +115,17 @@ static void merge(void *l_base, size_t l_count, void *r_base, size_t r_count, si
             src = GET_ELEMENT(r_base, r_idx++, size);
         }
 
-        memcpy(GET_ELEMENT(res, res_idx++, size), src, size);
+        VERIFY(memcpy(GET_ELEMENT(res, res_idx++, size), src, size));
     }
 
     while (l_idx < l_count)
-        memcpy(GET_ELEMENT(res, res_idx++, size), GET_ELEMENT(l_base, l_idx++, size), size);
+        VERIFY(memcpy(GET_ELEMENT(res, res_idx++, size), GET_ELEMENT(l_base, l_idx++, size), size));
 
     while (r_idx < r_count)
-        memcpy(GET_ELEMENT(res, res_idx++, size), GET_ELEMENT(r_base, r_idx++, size), size);
+        VERIFY(memcpy(GET_ELEMENT(res, res_idx++, size), GET_ELEMENT(r_base, r_idx++, size), size));
 
-    memcpy(l_base, res, res_size);
+    VERIFY(memcpy(l_base, res, res_size));
+
     free(res);
 }
 
@@ -165,8 +186,8 @@ static int float_comparator_fn(const void *left, const void *right) {
 
 // PURPOSE: Compares two strings from two generic pointers.
 static int string_comparator_fn(const void *left, const void *right) {
-    char *a = *(char **) left;
-    char *b = *(char **) right;
+    char *a = (char *) left;
+    char *b = (char *) right;
 
     return strcmp(a, b);
 }

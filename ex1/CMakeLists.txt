@@ -10,7 +10,7 @@ set(OUTPUT_DIR "../bin")
 set(LIB_DIR "src/library")
 file(COPY resources DESTINATION ${OUTPUT_DIR})
 
-add_compile_options("-pedantic" "-Wall" "-O3")
+add_compile_options("-pedantic" "-Wall" "-O3" "-DENABLE_PROFILER=1")
 
 add_executable(${EXC_NAME}
         src/library/merge-binary-insertion-sort.c
