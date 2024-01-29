@@ -2,6 +2,7 @@
 #include <malloc.h>
 #include <mem.h>
 #include <assert.h>
+#include <stdio.h>
 #include "merge-binary-insertion-sort.h"
 
 //---------------------------------------------------------------------------------------------\\
@@ -89,13 +90,13 @@ static void merge(void *l_base, size_t l_count, void *r_base, size_t r_count, si
     l_idx = r_idx = res_idx = 0;
 
     while (l_idx < l_count && r_idx < r_count) {
-        if (compare(GET_ELEMENT(l_base, l_idx, size), GET_ELEMENT(r_base, r_idx, size)) >= 0) {
+        if (compare(GET_ELEMENT(l_base, l_idx, size), GET_ELEMENT(r_base, r_idx, size)) <= 0) {
             src = GET_ELEMENT(l_base, l_idx++, size);
         } else {
             src = GET_ELEMENT(r_base, r_idx++, size);
         }
 
-        memcpy(GET_ELEMENT(res, res_idx, size), src, size);
+        memcpy(GET_ELEMENT(res, res_idx++, size), src, size);
     }
 
     while (l_idx < l_count)
@@ -135,7 +136,7 @@ void merge_binary_insertion_sort(void *base, size_t count, size_t size, size_t t
     half_base = GET_ELEMENT(base, half, size);
 
     merge_binary_insertion_sort(base, half, size, threshold, compare);
-    merge_binary_insertion_sort(base, count - half, size, threshold, compare);
+    merge_binary_insertion_sort(half_base, count - half, size, threshold, compare);
 
     merge(base, half, half_base, count - half, size, compare);
 }
@@ -144,6 +145,7 @@ void merge_binary_insertion_sort(void *base, size_t count, size_t size, size_t t
 
 //---------------------------------------------------------------------------------------------\\
 
+// PURPOSE: Compares two ints from two generic pointers.
 static int int_comparator_fn(const void *left, const void *right) {
     int a = *(int *) left;
     int b = *(int *) right;
@@ -155,6 +157,7 @@ static int int_comparator_fn(const void *left, const void *right) {
 
 //---------------------------------------------------------------------------------------------\\
 
+// PURPOSE: Compares two floats from two generic pointers.
 static int float_comparator_fn(const void *left, const void *right) {
     float a = *(float *) left;
     float b = *(float *) right;
@@ -166,6 +169,7 @@ static int float_comparator_fn(const void *left, const void *right) {
 
 //---------------------------------------------------------------------------------------------\\
 
+// PURPOSE: Compares two strings from two generic pointers.
 static int string_comparator_fn(const void *left, const void *right) {
     char *a = (char *) left;
     char *b = (char *) right;
