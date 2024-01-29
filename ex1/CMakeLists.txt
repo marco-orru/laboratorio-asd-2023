@@ -4,15 +4,22 @@ project(MergeBinaryInsertionSort C)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-set(LIB_NAME "merge-bin-insertion-sort")
 set(EXC_NAME "main_ex1")
 
-add_library(${LIB_NAME} STATIC
-        src/library/merge-binary-insertion-sort.c
-        src/library/csv.c
-        src/library/file-sorter.c
-)
+set(OUTPUT_DIR "../bin")
+set(LIB_DIR "src/library")
+file(COPY resources DESTINATION ${OUTPUT_DIR})
+
+add_compile_options("-O3")
 
 add_executable(${EXC_NAME}
+        src/library/merge-binary-insertion-sort.c
+        src/library/file-sorter.c
         src/main.c
+)
+
+target_include_directories(${EXC_NAME} PRIVATE ${LIB_DIR})
+
+set_target_properties(${EXC_NAME} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIR}
 )
