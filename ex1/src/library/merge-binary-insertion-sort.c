@@ -2,15 +2,14 @@
 #include <malloc.h>
 #include <mem.h>
 #include <assert.h>
-#include <stdio.h>
 #include "merge-binary-insertion-sort.h"
 
-//---------------------------------------------------------------------------------------------\\
+/*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Gets a pointer to the element at the specified index inside the specified array.
 #define GET_ELEMENT(base, index, size) ((void*)(((unsigned char*)(base)) + (index) * (size)))
 
-//---------------------------------------------------------------------------------------------\\
+/*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Perform binary search on a sorted array to find the correct position for an element.
 // NOTE: The sorted array is the sub-array with [0, upper - 1] bounds of the base array, which has [0, size - 1] bounds.
@@ -39,7 +38,7 @@ static size_t binary_search(void *base, size_t size, void *elem, size_t upper, c
            : lower;
 }
 
-//---------------------------------------------------------------------------------------------\\
+/*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Shifts to the right by one position the items in range [insert_ids, from_idx - 1].
 static void *shift_right(void *base, size_t size, size_t insert_idx, size_t from_idx) {
@@ -55,7 +54,7 @@ static void *shift_right(void *base, size_t size, size_t insert_idx, size_t from
     return pivot;
 }
 
-//---------------------------------------------------------------------------------------------\\
+/*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Sorts the given array using the binary insertion sort algorithm, using the specified compare function to
 //          compare elements.
@@ -77,7 +76,7 @@ static void binary_insertion_sort(void *base, size_t count, size_t size, compare
     free(src_elem);
 }
 
-//---------------------------------------------------------------------------------------------\\
+/*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Merges two sorted arrays into one.
 static void merge(void *l_base, size_t l_count, void *r_base, size_t r_count, size_t size, compare_fn compare) {
@@ -109,12 +108,9 @@ static void merge(void *l_base, size_t l_count, void *r_base, size_t r_count, si
     free(res);
 }
 
-//---------------------------------------------------------------------------------------------\\
+/*---------------------------------------------------------------------------------------------------------------*/
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "misc-no-recursion"
-
-void merge_binary_insertion_sort(void *base, size_t count, size_t size, size_t threshold, compare_fn compare) {
+void merge_binary_insertion_sort(void *base, size_t count, size_t size, size_t threshold, compare_fn compare) { // NOLINT(*-no-recursion)
     size_t half;
     void *half_base;
 
@@ -141,9 +137,7 @@ void merge_binary_insertion_sort(void *base, size_t count, size_t size, size_t t
     merge(base, half, half_base, count - half, size, compare);
 }
 
-#pragma clang diagnostic pop
-
-//---------------------------------------------------------------------------------------------\\
+/*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Compares two ints from two generic pointers.
 static int int_comparator_fn(const void *left, const void *right) {
@@ -155,7 +149,7 @@ static int int_comparator_fn(const void *left, const void *right) {
     return 0;
 }
 
-//---------------------------------------------------------------------------------------------\\
+/*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Compares two floats from two generic pointers.
 static int float_comparator_fn(const void *left, const void *right) {
@@ -167,7 +161,7 @@ static int float_comparator_fn(const void *left, const void *right) {
     return 0;
 }
 
-//---------------------------------------------------------------------------------------------\\
+/*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Compares two strings from two generic pointers.
 static int string_comparator_fn(const void *left, const void *right) {
@@ -177,7 +171,7 @@ static int string_comparator_fn(const void *left, const void *right) {
     return strcmp(a, b);
 }
 
-//---------------------------------------------------------------------------------------------\\
+/*---------------------------------------------------------------------------------------------------------------*/
 
 const compare_fn int_comparator = int_comparator_fn;
 const compare_fn float_comparator = float_comparator_fn;

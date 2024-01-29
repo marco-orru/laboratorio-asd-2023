@@ -3,7 +3,7 @@
 
 #define SORT_FIELD FIELD_INTEGER
 
-int main() {
+int main(void) {
     FILE *in_file, *out_file;
 
     in_file = fopen("resources/records.csv", "r");

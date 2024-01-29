@@ -4,12 +4,12 @@
 #include "merge-binary-insertion-sort.h"
 #include "records-sorter.h"
 
-//---------------------------------------------------------------------------------------------\\
+/*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: The max length of a line.
 #define LINE_BUFFER_SIZE 128
 
-//---------------------------------------------------------------------------------------------\\
+/*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Gets the i-th element from the records array as a string.
 #define GET_STRING(records, i) (((char**)records)[(i)])
@@ -35,7 +35,7 @@ while(0)
 // PURPOSE: Saves the float 'flt' inside the records array at the specified index, increasing it after the operation.
 #define LOAD_FLOAT(records, index, flt) (GET_FLOAT(records, index++) = atof((flt)))
 
-//---------------------------------------------------------------------------------------------\\
+/*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Allocates the records array according to the field type.
 static void *alloc_records(FieldId field_id) {
@@ -51,12 +51,15 @@ static void *alloc_records(FieldId field_id) {
         case FIELD_FLOAT:
             records = malloc(sizeof(float) * NUMBER_OF_RECORDS);
             break;
+        default:
+            records = NULL;
+            break;
     }
 
     return records;
 }
 
-//---------------------------------------------------------------------------------------------\\
+/*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Frees the record array according to the field type.
 static void free_records(void *records, FieldId fieldId) {
@@ -73,10 +76,7 @@ static void free_records(void *records, FieldId fieldId) {
     }
 }
 
-//---------------------------------------------------------------------------------------------\\
-
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "cert-err34-c"
+/*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Loads the record of the specified type from a file, and saves them into the records array.
 static void load_records(FILE *in_file, FieldId field_id, void *records) {
@@ -97,21 +97,19 @@ static void load_records(FILE *in_file, FieldId field_id, void *records) {
 
         field = strtok(NULL, ",");  // STRING int
         if (field_id == FIELD_INTEGER) {
-            LOAD_INT(records, i, field);
+            LOAD_INT(records, i, field); // NOLINT(*-err34-c)
             continue;
         }
 
         field = strtok(NULL, ",");  // STRING float
         if (field_id == FIELD_FLOAT) {
-            LOAD_FLOAT(records, i, field);
+            LOAD_FLOAT(records, i, field); // NOLINT(*-err34-c)
             continue;
         }
     }
 }
 
-#pragma clang diagnostic pop
-
-//---------------------------------------------------------------------------------------------\\
+/*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Writes the records array into the specified file.
 static void store_records(FILE *out_file, FieldId field_id, void *records) {
@@ -134,7 +132,7 @@ static void store_records(FILE *out_file, FieldId field_id, void *records) {
     }
 }
 
-//---------------------------------------------------------------------------------------------\\
+/*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Sorts the records using the appropriate comparator function.
 static void sort(void *records, FieldId field_id, size_t threshold) {
@@ -146,22 +144,24 @@ static void sort(void *records, FieldId field_id, size_t threshold) {
             elem_size = sizeof(char *);
             compare_fn = string_comparator;
             break;
-
         case FIELD_INTEGER:
             elem_size = sizeof(int);
             compare_fn = int_comparator;
             break;
-
         case FIELD_FLOAT:
             elem_size = sizeof(float);
             compare_fn = float_comparator;
+            break;
+        default:
+            elem_size = -1;
+            compare_fn = NULL;
             break;
     }
 
     merge_binary_insertion_sort(records, NUMBER_OF_RECORDS, elem_size, threshold, compare_fn);
 }
 
-//---------------------------------------------------------------------------------------------\\
+/*---------------------------------------------------------------------------------------------------------------*/
 
 void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, FieldId field_id) {
     void *records;
