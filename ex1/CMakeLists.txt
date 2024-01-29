@@ -10,9 +10,9 @@ set(OUTPUT_DIR "../bin")
 set(LIB_DIR "src/library")
 file(COPY resources DESTINATION ${OUTPUT_DIR})
 
-set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-
 add_compile_options("-pedantic" "-Wall")
+
+set(CMAKE_C_FLAGS_RELEASE "-O3")
 
 add_executable(${EXC_NAME}
         src/library/merge-binary-insertion-sort.c
