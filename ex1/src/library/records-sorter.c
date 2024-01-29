@@ -2,7 +2,7 @@
 #include <malloc.h>
 #include <string.h>
 #include "merge-binary-insertion-sort.h"
-#include "file-sorter.h"
+#include "records-sorter.h"
 
 #define MACRO_START do
 #define MACRO_END while(0)

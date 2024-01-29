@@ -14,7 +14,7 @@ add_compile_options("-O3")
 
 add_executable(${EXC_NAME}
         src/library/merge-binary-insertion-sort.c
-        src/library/file-sorter.c
+        src/library/records-sorter.c
         src/main.c
 )
 

@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "file-sorter.h"
+#include "records-sorter.h"
 
 #define SORT_FIELD FIELD_INTEGER
 
