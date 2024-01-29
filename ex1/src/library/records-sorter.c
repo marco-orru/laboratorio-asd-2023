@@ -76,6 +76,7 @@ static void load_records(FILE *in_file, Record *records) {
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
+#if !ENABLE_PROFILER
 // PURPOSE: Writes the records array into the specified file.
 static void store_records(FILE *out_file, Record *records) {
     int i;
@@ -90,6 +91,7 @@ static void store_records(FILE *out_file, Record *records) {
                 record->float_field);
     }
 }
+#endif
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -111,9 +113,14 @@ static int compare_records_fn(const void* record_a, const void* record_b) {
     }
 
     assert(0);
+    return 0;
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/
+
+#if ENABLE_PROFILER
+static Record* g_unsorted_records;
+#endif
 
 void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, FieldId field_id) {
     Record *records;
@@ -138,7 +145,16 @@ void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, Field
         abort();
     }
 
-    load_records(in_file, records);
+#if ENABLE_PROFILER
+    if (!g_unsorted_records) {
+        g_unsorted_records = malloc(sizeof(Record) * NUMBER_OF_RECORDS);
+        load_records(in_file, records);
+        memcpy(g_unsorted_records, records, sizeof(Record) * NUMBER_OF_RECORDS);
+    } else {
+        memcpy(records, g_unsorted_records, sizeof(Record) * NUMBER_OF_RECORDS);
+    }
+#endif
+
 
 #if ENABLE_PROFILER
     begin = clock();
@@ -173,3 +189,12 @@ void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, Field
 
     g_field_id = -1;
 }
+
+/*---------------------------------------------------------------------------------------------------------------*/
+
+#if ENABLE_PROFILER
+void records_sorter__release_profiler(void) {
+    free((void*)g_unsorted_records);
+    g_unsorted_records = NULL;
+}
+#endif

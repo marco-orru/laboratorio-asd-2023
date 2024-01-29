@@ -3,11 +3,6 @@
 
 #include "records-sorter.h"
 
-#ifndef ENABLE_PROFILER
-// PURPOSE: If enabled, the main will execute in profiling mode.
-#define ENABLE_PROFILER 0
-#endif
-
 #ifndef PROFILE_ONLY_SORTING
 #define PROFILE_ONLY_SORTING 1
 #endif
@@ -28,8 +23,8 @@
 #define NUMBER_OF_THRESHOLDS 1
 #define PROFILE_THRESHOLDS {}
 #elif PROFILE_TEST == 1
-#define NUMBER_OF_THRESHOLDS 12
-#define PROFILE_THRESHOLDS {0, 5, 10, 20, 50, 80, 100, 500, 1000, 10000, 100000, 1000000}
+#define NUMBER_OF_THRESHOLDS 11
+#define PROFILE_THRESHOLDS {0, 5, 10, 20, 50, 80, 100, 500, 1000, 5000, 10000}
 #elif PROFILE_TEST == 2
 #define NUMBER_OF_THRESHOLDS 12
 #define PROFILE_THRESHOLDS {50, 80, 100, 150, 200, 250, 300, 350, 400, 450, 500, 750}
@@ -140,6 +135,8 @@ static int profile_execution(const char *in_file_path, const char *out_file_path
         if (process_file(in_file_path, out_file_path, thr[i], FIELD_FLOAT) != 0)
             return EXIT_FAILURE;
     }
+
+    records_sorter__release_profiler();
 
     return EXIT_SUCCESS;
 }

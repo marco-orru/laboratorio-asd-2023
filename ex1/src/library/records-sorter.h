@@ -33,3 +33,10 @@ typedef enum FieldId {
  * @param field_id The type of the fields to be sorted.
  */
 void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, FieldId field_id);
+
+#if ENABLE_PROFILER
+/**
+ * @brief When the profiler is enabled, releases the resources used for speed-up profiling.
+ */
+void records_sorter__release_profiler(void);
+#endif
