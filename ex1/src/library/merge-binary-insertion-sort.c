@@ -118,11 +118,11 @@ static void merge(void *l_base, size_t l_count, void *r_base, size_t r_count, si
         VERIFY(memcpy(GET_ELEMENT(res, res_idx++, size), src, size));
     }
 
-    while (l_idx < l_count)
-        VERIFY(memcpy(GET_ELEMENT(res, res_idx++, size), GET_ELEMENT(l_base, l_idx++, size), size));
+    if (l_idx < l_count)
+        VERIFY(memcpy(GET_ELEMENT(res, res_idx, size), GET_ELEMENT(l_base, l_idx, size), size * (l_count - l_idx)));
 
-    while (r_idx < r_count)
-        VERIFY(memcpy(GET_ELEMENT(res, res_idx++, size), GET_ELEMENT(r_base, r_idx++, size), size));
+    if (r_idx < r_count)
+        VERIFY(memcpy(GET_ELEMENT(res, res_idx, size), GET_ELEMENT(r_base, r_idx, size), size * (r_count - r_idx)));
 
     VERIFY(memcpy(l_base, res, res_size));
 
