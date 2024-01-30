@@ -2,28 +2,41 @@ cmake_minimum_required(VERSION 3.27)
 project(MergeBinaryInsertionSort C)
 
 set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_STANDARD_REQUIRED ON)
 
-set(EXC_NAME "main_ex1")
+add_compile_options("-Wall" "-pedantic")
+#add_compile_definitions(ENABLE_PROFILER=1)
 
-set(OUTPUT_DIR "../bin")
-set(LIB_DIR "src/library")
-file(COPY resources DESTINATION ${OUTPUT_DIR})
+set(MAIN_OUTPUT_DIR "../bin")
+set(UT_OUTPUT_DIR "${MAIN_OUTPUT_DIR}/ut")
 
-add_compile_options("-pedantic" "-Wall" "-O3" "-DENABLE_PROFILER=0")
+set(MAIN_NAME "main_ex1")
+set(UT_NAME "ut_ex1")
 
-add_executable(${EXC_NAME}
-        src/library/merge-binary-insertion-sort.c
-        src/library/records-sorter.c
-        src/main.c
+set(SRC_DIR "src")
+set(LIB_DIR "${SRC_DIR}/library")
+set(UT_DIR "${SRC_DIR}/ut")
+set(UT_SUITE_DIR "${UT_DIR}/suite")  # Unity
+
+add_executable(${MAIN_NAME}
+        "${SRC_DIR}/main.c"
+        "${LIB_DIR}/merge-binary-insertion-sort.c"
+        "${LIB_DIR}/records-sorter.c"
 )
 
-target_include_directories(${EXC_NAME} PRIVATE ${LIB_DIR})
-
-set_target_properties(${EXC_NAME} PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIR}
+set_target_properties(${MAIN_NAME} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${MAIN_OUTPUT_DIR}
 )
 
-target_compile_definitions(${EXC_NAME} PRIVATE
-        $<$<CONFIG:Debug>:DEBUG>
+target_include_directories(${MAIN_NAME} PRIVATE ${LIB_DIR})
+
+add_executable(${UT_NAME}
+        "${UT_DIR}/ut_main.c"
+        "${LIB_DIR}/merge-binary-insertion-sort.c"
+        "${UT_SUITE_DIR}/unity.c"
 )
+
+set_target_properties(${UT_NAME} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${UT_OUTPUT_DIR}
+)
+
+target_include_directories(${UT_NAME} PRIVATE ${LIB_DIR} ${UT_SUITE_DIR})

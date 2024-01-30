@@ -3,10 +3,14 @@
 
 #include "records-sorter.h"
 
+#ifndef ENABLE_PROFILER
+#define ENABLE_PROFILER 0
+#endif
+
 #ifndef PROFILE_ONLY_SORTING
 // PURPOSE: When this is enabled, the profiler will profile only the execution of the sorting algorithm,
 //          and not the execution of the file reading and writing.
-#define PROFILE_ONLY_SORTING 1
+#define PROFILE_ONLY_SORTING 1 && ENABLE_PROFILER
 #endif
 
 #if ENABLE_PROFILER && !defined(PROFILE_TEST)

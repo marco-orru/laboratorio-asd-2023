@@ -4,6 +4,10 @@
 #include "merge-binary-insertion-sort.h"
 #include "records-sorter.h"
 
+#ifndef ENABLE_PROFILER
+#define ENABLE_PROFILER 0
+#endif
+
 #if ENABLE_PROFILER
 #include <time.h>
 #endif
