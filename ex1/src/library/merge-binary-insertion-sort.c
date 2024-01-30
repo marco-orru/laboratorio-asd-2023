@@ -1,8 +1,9 @@
 #include <memory.h>
 #include <malloc.h>
-#include <mem.h>
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "merge-binary-insertion-sort.h"
 
 /*---------------------------------------------------------------------------------------------------------------*/

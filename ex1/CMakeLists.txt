@@ -3,13 +3,13 @@ project(MergeBinaryInsertionSort C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_compile_options("-Wall" "-pedantic")
-#add_compile_definitions(ENABLE_PROFILER=1)
+add_compile_options("-Wall" "-pedantic" "-O3")
 
 set(MAIN_OUTPUT_DIR "../bin")
 set(UT_OUTPUT_DIR "${MAIN_OUTPUT_DIR}/ut")
 
 set(MAIN_NAME "main_ex1")
+set(PROFILER_NAME "profiler_ex1")
 set(UT_NAME "ut_ex1")
 
 set(SRC_DIR "src")
@@ -28,6 +28,20 @@ set_target_properties(${MAIN_NAME} PROPERTIES
 )
 
 target_include_directories(${MAIN_NAME} PRIVATE ${LIB_DIR})
+
+add_executable(${PROFILER_NAME}
+        "${SRC_DIR}/main.c"
+        "${LIB_DIR}/merge-binary-insertion-sort.c"
+        "${LIB_DIR}/records-sorter.c"
+)
+
+set_target_properties(${PROFILER_NAME} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${MAIN_OUTPUT_DIR}
+)
+
+target_include_directories(${PROFILER_NAME} PRIVATE ${LIB_DIR})
+
+target_compile_definitions(${PROFILER_NAME} PRIVATE ENABLE_PROFILER=1)
 
 add_executable(${UT_NAME}
         "${UT_DIR}/ut_main.c"

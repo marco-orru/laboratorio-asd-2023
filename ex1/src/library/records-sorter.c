@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <malloc.h>
 #include <string.h>
+#include <stdlib.h>
 #include "merge-binary-insertion-sort.h"
 #include "records-sorter.h"
 
@@ -126,7 +127,12 @@ static int compare_records_fn(const void* record_a, const void* record_b) {
 static Record* g_unsorted_records;
 #endif
 
-void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, FieldId field_id) {
+#if ENABLE_PROFILER
+void sort_records(FILE *in_file, size_t sorting_threshold, FieldId field_id)
+#else
+void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, FieldId field_id)
+#endif
+{
     Record *records;
 
 #if ENABLE_PROFILER
@@ -135,10 +141,13 @@ void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, Field
 #endif
 
     assert(in_file);
-    assert(out_file);
-    assert(in_file != out_file);
     assert(sorting_threshold >= 0);
     assert(field_id >= FIELD_STRING && field_id <= FIELD_FLOAT);
+
+#if !ENABLE_PROFILER
+    assert(in_file != out_file);
+    assert(out_file);
+#endif
 
     g_field_id = field_id;
 

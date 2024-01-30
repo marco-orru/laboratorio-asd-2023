@@ -23,6 +23,7 @@ typedef enum FieldId {
     FIELD_FLOAT
 } FieldId;
 
+#if !ENABLE_PROFILER
 /**
  * @brief Reads the records stored in the provided file, then sorts the fields of the specified type and saves the sorted
  * records in another file.
@@ -33,6 +34,9 @@ typedef enum FieldId {
  * @param field_id The type of the fields to be sorted.
  */
 void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, FieldId field_id);
+#else
+void sort_records(FILE *in_file, size_t sorting_threshold, FieldId field_id);
+#endif
 
 #if ENABLE_PROFILER
 /**
