@@ -44,6 +44,28 @@ void new_skiplist(SkipList **list, size_t max_height, compare_fn compare) {
 /*---------------------------------------------------------------------------------------------------------------*/
 
 void clear_skiplist(SkipList **list) {
+    SkipList * list_ptr;
+    SkipListNode* current_node, *next_node;
+    size_t i;
+
+    assert(list && *list);
+
+    list_ptr = *list;
+
+    current_node = list_ptr->heads[0];
+
+    while (current_node) {
+        next_node = current_node->next[0];
+        free(current_node->item);
+        free(current_node->next);
+        free(current_node);
+        current_node = next_node;
+    }
+
+    free(list_ptr->heads);
+    free(list_ptr);
+
+    *list = NULL;
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/
@@ -139,53 +161,3 @@ const void *search_skiplist(SkipList *list, void *item) {
 
     return NULL;
 }
-
-#if 0
-/*---------------------------------------------------------------------------------------------------------------*/
-
-// PURPOSE: Prints a node.
-static void print_int_skiplist_node(SkipListNode** node, size_t size, size_t max_level)
-{
-    size_t i;
-    int number;
-
-    number = *(int*)node[0]->item;
-
-    printf("%d\t", number);
-    for (i = 1; i < size; i++)
-        printf("%d\t", number);
-    for (; i < max_level; i++)
-        printf("|\t");
-    printf("\n");
-
-    for (i = 0; i < max_level; i++)
-        printf("|\t");
-    printf("\n");
-
-    if (node[0]->next[0])
-        print_int_skiplist_node(node[0]->next, node[0]->next[0]->size, max_level);
-}
-
-/*---------------------------------------------------------------------------------------------------------------*/
-
-// PURPOSE
-static void print_int_skiplist(SkipList* list) {
-    size_t i;
-
-    for (i = 0; i < list->max_level; i++)
-        printf("*\t");
-    for (; i < list->max_height; i++)
-        printf("x\t");
-    printf("\n");
-
-    for (i = 0; i < list->max_level ; i++)
-        printf("|\t");
-    printf("\n");
-
-    print_int_skiplist_node(list->heads, list->heads[0]->size, list->max_level);
-
-    for (i = 0; i < list->max_level ; i++)
-        printf("NIL\t");
-    printf("\n");
-}
-#endif
