@@ -3,7 +3,7 @@ project(SkipList C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_compile_options("-Wall" "-pedantic" "-O3")
+add_compile_options("-Wall" "-pedantic")
 
 set(MAIN_OUTPUT_DIR "../bin")
 
@@ -14,6 +14,7 @@ set(LIB_DIR "${SRC_DIR}/library")
 
 add_executable(${MAIN_NAME}
         "${SRC_DIR}/main.c"
+        "${LIB_DIR}/comparator.c"
         "${LIB_DIR}/skip-list.c"
 )
 
