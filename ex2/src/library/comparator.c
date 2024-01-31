@@ -35,17 +35,8 @@ static int string_comparator_fn(const void *left, const void *right) {
     return strcmp(a, b);
 }
 
-// PURPOSE: Compares two strings from two generic pointers.
-static int dyn_string_comparator_fn(const void *left, const void *right) {
-    char *a = *(char **) left;
-    char *b = *(char **) right;
-
-    return strcmp(a, b);
-}
-
 /*---------------------------------------------------------------------------------------------------------------*/
 
 const compare_fn int_comparator = int_comparator_fn;
 const compare_fn float_comparator = float_comparator_fn;
 const compare_fn string_comparator = string_comparator_fn;
-const compare_fn dyn_string_comparator = dyn_string_comparator_fn;

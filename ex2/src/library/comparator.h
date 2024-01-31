@@ -67,20 +67,3 @@ extern const compare_fn float_comparator;
  */
 extern const compare_fn string_comparator;
 
-/**
- * @brief Comparator function for dynamically allocated strings.
- *
- * @remark This function compares two dynamic strings (char**) pointed to by 'left' and 'right'.
- * It returns a negative value if the first non-matching character in 'left' is greater (in ASCII) than that of 'right',
- * zero if they are equal, and a positive value if the first non-matching character in 'left' is lower (in ASCII) than
- * that of 'right'.
- *
- * @param left  Pointer to the first string.
- * @param right Pointer to the second string.
- * @return      A negative value if 'left' is less than 'right', zero if they are equal,
- *              and a positive value if 'left' is greater than 'right'.
- *
- * @note The use of this comparator for values other than integers will cause undefined behavior.
- * @note The strings shall be null-terminated.
- */
-extern const compare_fn dyn_string_comparator;

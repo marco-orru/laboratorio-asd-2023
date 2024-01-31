@@ -3,7 +3,7 @@ project(SkipList C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_compile_options("-Wall" "-pedantic")
+add_compile_options("-Wall" "-pedantic" "-Wno-unknown-pragmas")
 
 set(MAIN_OUTPUT_DIR "../bin")
 set(UT_OUTPUT_DIR "${MAIN_OUTPUT_DIR}/ut")
