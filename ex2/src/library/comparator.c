@@ -1,4 +1,5 @@
 #include <string.h>
+#include <ctype.h>
 #include "comparator.h"
 
 /*---------------------------------------------------------------------------------------------------------------*/
@@ -37,6 +38,17 @@ static int string_comparator_fn(const void *left, const void *right) {
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
+// PURPOSE: Compares two strings from two generic pointers (case-insensitive)
+static int string_case_insensitive_comparator_fn(const void *left, const void *right) {
+    char *a = (char *) left;
+    char *b = (char *) right;
+
+    return strcasecmp(a, b);
+}
+
+/*---------------------------------------------------------------------------------------------------------------*/
+
 const compare_fn int_comparator = int_comparator_fn;
 const compare_fn float_comparator = float_comparator_fn;
 const compare_fn string_comparator = string_comparator_fn;
+const compare_fn string_case_insensitive_comparator = string_case_insensitive_comparator_fn;

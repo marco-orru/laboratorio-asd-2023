@@ -20,6 +20,7 @@ add_executable(${MAIN_NAME}
         "${SRC_DIR}/main.c"
         "${LIB_DIR}/comparator.c"
         "${LIB_DIR}/skip-list.c"
+        "${LIB_DIR}/errors-finder.c"
 )
 
 set_target_properties(${MAIN_NAME} PROPERTIES

@@ -2,41 +2,28 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "assert_util.h"
 #include "skip-list.h"
-
-/*---------------------------------------------------------------------------------------------------------------*/
-
-// PURPOSE: Prints an error message and aborts the program
-#define PRINT_ERROR(msg)    \
-do {                        \
-    fprintf(stderr, msg);   \
-    fflush(stderr);         \
-    abort();                \
-} while(0)
-
-// PURPOSE: Verifies that an unsafe function returns non-zero, or aborts if it returns zero.
-#define VERIFY(cmd)                                                 \
-do {                                                                \
-    if (!(cmd))                                                     \
-        PRINT_ERROR("[VERIFY_ERROR]: (" #cmd ") == FALSE");         \
-} while (0)
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
 void new_skiplist(SkipList **list, size_t max_height, compare_fn compare) {
     SkipList* skiplist;
 
-    assert(list);
-    assert(max_height >= 1);
-    assert(compare);
+    ASSERT_NULL_PARAMETER(list, new_skiplist);
+    ASSERT_NULL_PARAMETER(compare, new_skiplist);
+    ASSERT(max_height >= 1, "'max_height' parameter must be >= 1", new_skiplist);
 
     skiplist = (SkipList*)malloc(sizeof(SkipList));
+
+    ASSERT(skiplist, "Unable to allocate memory for a SkipList", new_skiplist);
+
     skiplist->max_level = 0;
     skiplist->max_height = max_height;
     skiplist->compare = compare;
     skiplist->heads = (SkipListNode**) calloc(max_height, sizeof(SkipListNode*));
 
-    VERIFY(skiplist->heads);
+    ASSERT(skiplist->heads, "Unable to allocate memory for the SkipList heads array", new_skiplist);
 
     *list = skiplist;
 }
@@ -47,7 +34,8 @@ void clear_skiplist(SkipList **list) {
     SkipList * list_ptr;
     SkipListNode* current_node, *next_node;
 
-    assert(list && *list);
+    ASSERT_NULL_PARAMETER(list, clear_skiplist);
+    ASSERT(*list, "'list' parameter points to a NULL list", clear_skiplist);
 
     list_ptr = *list;
 
@@ -103,13 +91,13 @@ static SkipListNode* create_node(void* item, size_t size) {
 
     node = (SkipListNode*) malloc(sizeof(SkipListNode));
 
-    VERIFY(node);
+    ASSERT(node, "Unable to allocate memory for a SkipListNode", create_node);
 
     node->item = item;
     node->size = size;
     node->next = (SkipListNode**) calloc(size, sizeof(SkipListNode*));
 
-    VERIFY(node->next);
+    ASSERT(node->next, "Unable to allocate memory for the next SkipListNode array", create_node);
 
     return node;
 }
@@ -121,8 +109,8 @@ void insert_skiplist(SkipList *list, void *item) {
     SkipListNode** base_nodes;
     size_t i;
 
-    assert(list);
-    assert(item);
+    ASSERT_NULL_PARAMETER(list, insert_skiplist);
+    ASSERT_NULL_PARAMETER(item, insert_skiplist);
 
     new_node = create_node(item, random_level(list->max_height));
     if (new_node->size > list->max_level)
@@ -147,6 +135,9 @@ void insert_skiplist(SkipList *list, void *item) {
 const void *search_skiplist(SkipList *list, void *item) {
     SkipListNode** base_nodes;
     size_t i;
+
+    ASSERT_NULL_PARAMETER(list, insert_skiplist);
+    ASSERT_NULL_PARAMETER(item, insert_skiplist);
 
     if (!list->heads[0])  // EMPTY LIST
         return NULL;

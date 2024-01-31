@@ -1,8 +1,6 @@
 #include <stdlib.h>
-#include "skip-list.h"
+#include "errors-finder.h"
 
 int main(void) {
-    SkipList * skipList;
-
     return EXIT_SUCCESS;
 }

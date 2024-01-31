@@ -28,7 +28,7 @@ typedef int (*compare_fn)(const void *, const void *);
  * @param right Pointer to the second integer.
  * @return      A negative value if 'left' is less than 'right', zero if they are equal,
  *              and a positive value if 'left' is greater than 'right'.
- *
+ * @note Before using this comparator, ensure that both 'left' and 'right' are valid pointers.
  * @note The use of this comparator for values other than integers will cause undefined behavior.
  */
 extern const compare_fn int_comparator;
@@ -45,6 +45,7 @@ extern const compare_fn int_comparator;
  * @return      A negative value if 'left' is less than 'right', zero if they are equal,
  *              and a positive value if 'left' is greater than 'right'.
  *
+ * @note Before using this comparator, ensure that both 'left' and 'right' are valid pointers.
  * @note The use of this comparator for values other than floats will cause undefined behavior.
  */
 extern const compare_fn float_comparator;
@@ -62,8 +63,27 @@ extern const compare_fn float_comparator;
  * @return      A negative value if 'left' is less than 'right', zero if they are equal,
  *              and a positive value if 'left' is greater than 'right'.
  *
+ * @note Before using this comparator, ensure that both 'left' and 'right' are valid pointers.
  * @note The use of this comparator for values other than integers will cause undefined behavior.
  * @note The strings shall be null-terminated.
  */
 extern const compare_fn string_comparator;
 
+/**
+ * @brief Comparator function for strings (case-insensitive)
+ *
+ * @remark This function compares two strings pointed to by 'left' and 'right' ignoring their case.
+ * It returns a negative value if the first non-matching character in 'left' is greater (in ASCII) than that of 'right',
+ * zero if they are equal, and a positive value if the first non-matching character in 'left' is lower (in ASCII) than
+ * that of 'right'.
+ *
+ * @param left  Pointer to the first string.
+ * @param right Pointer to the second string.
+ * @return      A negative value if 'left' is less than 'right', zero if they are equal,
+ *              and a positive value if 'left' is greater than 'right'.
+ *
+ * @note Before using this comparator, ensure that both 'left' and 'right' are valid pointers.
+ * @note The use of this comparator for values other than integers will cause undefined behavior.
+ * @note The strings shall be null-terminated.
+ */
+extern const compare_fn string_case_insensitive_comparator;
