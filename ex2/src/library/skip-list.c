@@ -148,6 +148,9 @@ const void *search_skiplist(SkipList *list, void *item) {
     SkipListNode** base_nodes;
     size_t i;
 
+    if (!list->heads[0])  // EMPTY LIST
+        return NULL;
+
     base_nodes = list->heads;
 
     for (i = list->max_level - 1; (int)i >= 0; i--) {
