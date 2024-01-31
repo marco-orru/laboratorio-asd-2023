@@ -46,7 +46,6 @@ void new_skiplist(SkipList **list, size_t max_height, compare_fn compare) {
 void clear_skiplist(SkipList **list) {
     SkipList * list_ptr;
     SkipListNode* current_node, *next_node;
-    size_t i;
 
     assert(list && *list);
 
