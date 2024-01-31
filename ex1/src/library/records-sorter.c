@@ -1,8 +1,8 @@
-#include <assert.h>
 #include <malloc.h>
 #include <string.h>
 #include <stdlib.h>
 #include "merge-binary-insertion-sort.h"
+#include "assert_util.h"
 #include "records-sorter.h"
 
 #ifndef ENABLE_PROFILER
@@ -117,7 +117,7 @@ static int compare_records_fn(const void* record_a, const void* record_b) {
             return float_comparator(&a->float_field, &b->float_field);
     }
 
-    assert(0);
+    PRINT_ERROR("Invalid field ID", compare_records_fn);
     return 0;
 }
 
@@ -140,23 +140,20 @@ void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, Field
     char field_name[16];
 #endif
 
-    assert(in_file);
-    assert(sorting_threshold >= 0);
-    assert(field_id >= FIELD_STRING && field_id <= FIELD_FLOAT);
+    ASSERT_NULL_PARAMETER(in_file, sort_records);
+    ASSERT(sorting_threshold >= 0, "The sorting threshold must be >= 0", sort_records);
+    ASSERT(field_id >= FIELD_STRING && field_id <= FIELD_FLOAT, "The field id is not in the valid range [1, 3]", sort_records);
 
 #if !ENABLE_PROFILER
-    assert(in_file != out_file);
-    assert(out_file);
+    ASSERT(in_file != out_file, "The two provided files are pointing to the same file", sort_records);
+    ASSERT_NULL_PARAMETER(out_file, sort_records);
 #endif
 
     g_field_id = field_id;
 
     records = (Record*)malloc(sizeof(Record) * NUMBER_OF_RECORDS);
 
-    if (!records) {
-        fprintf(stderr, "Error while allocating memory for records!");
-        abort();
-    }
+    ASSERT(records, "Unable to allocate memory for records", sort_records);
 
 #if ENABLE_PROFILER
     if (!g_unsorted_records) {

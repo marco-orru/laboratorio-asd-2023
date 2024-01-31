@@ -125,7 +125,7 @@ static int process_file(const char *in_path, const char *out_path, size_t sortin
            sorting_threshold,
            (double) (end - begin) / CLOCKS_PER_SEC);
 #elif !ENABLE_PROFILER
-    printf("Records has been sorted and saved to the specified file.\n");
+    printf("Records have been sorted and saved to the specified file.\n");
 #endif
 
 #if !ENABLE_PROFILER

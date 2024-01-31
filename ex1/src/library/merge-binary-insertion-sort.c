@@ -1,30 +1,14 @@
 #include <memory.h>
 #include <malloc.h>
-#include <assert.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include "merge-binary-insertion-sort.h"
+#include "assert_util.h"
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Gets a pointer to the element at the specified index inside the specified array.
 #define GET_ELEMENT(base, index, size) ((void*)(((unsigned char*)(base)) + (index) * (size)))
-
-// PURPOSE: Prints an error message and aborts the program
-#define PRINT_ERROR(msg)    \
-do {                        \
-    fprintf(stderr, msg);   \
-    fflush(stderr);         \
-    abort();                \
-} while(0)
-
-// PURPOSE: Verifies that an unsafe function returns non-zero, or aborts if it returns zero.
-#define VERIFY(cmd)                                                 \
-do {                                                                \
-    if (!(cmd))                                                     \
-        PRINT_ERROR("[VERIFY_ERROR]: (" #cmd ") == FALSE");         \
-} while (0)
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -66,7 +50,7 @@ static void *shift_right(void *base, size_t size, size_t insert_idx, size_t from
     pivot_dest = GET_ELEMENT(base, insert_idx + 1, size);
 
     shift_sz = (from_idx - insert_idx) * size;
-    VERIFY(memmove(pivot_dest, pivot, shift_sz));
+    ASSERT(memcpy(pivot_dest, pivot, shift_sz), "Unable to shift memory", shift_right);
 
     return pivot;
 }
@@ -81,15 +65,15 @@ static void binary_insertion_sort(void *base, size_t count, size_t size, compare
 
     src_elem = malloc(size);
 
-    VERIFY(src_elem);
+    ASSERT(src_elem, "Unable to allocate memory for the inserted element", binary_insertion_sort);
 
     for (i = 1; i < count; ++i) {
         current_elem = GET_ELEMENT(base, i, size);
         new_pos = binary_search(base, size, current_elem, i - 1, compare);
 
-        VERIFY(memcpy(src_elem, current_elem, size));
+        ASSERT(memcpy(src_elem, current_elem, size), "Unable to save a copy of the current element", binary_insertion_sort);
         dst_elem = shift_right(base, size, new_pos, i);
-        VERIFY(memcpy(dst_elem, src_elem, size));
+        ASSERT(memcpy(dst_elem, src_elem, size), "Unable to copy the inserted element into its destination", binary_insertion_sort);
     }
 
     free(src_elem);
@@ -105,7 +89,7 @@ static void merge(void *l_base, size_t l_count, void *r_base, size_t r_count, si
     res_size = (l_count + r_count) * size;
     res = malloc(res_size);
 
-    VERIFY(res);
+    ASSERT(res, "Unable to allocate memory for the merging array", merge);
 
     l_idx = r_idx = res_idx = 0;
 
@@ -116,16 +100,16 @@ static void merge(void *l_base, size_t l_count, void *r_base, size_t r_count, si
             src = GET_ELEMENT(r_base, r_idx++, size);
         }
 
-        VERIFY(memcpy(GET_ELEMENT(res, res_idx++, size), src, size));
+        ASSERT(memcpy(GET_ELEMENT(res, res_idx++, size), src, size), "Unable to copy an element to the merging array", merge);
     }
 
     if (l_idx < l_count)
-        VERIFY(memcpy(GET_ELEMENT(res, res_idx, size), GET_ELEMENT(l_base, l_idx, size), size * (l_count - l_idx)));
+        ASSERT(memcpy(GET_ELEMENT(res, res_idx, size), GET_ELEMENT(l_base, l_idx, size), size * (l_count - l_idx)), "Unable to copy an element to the merging array", merge);
 
     if (r_idx < r_count)
-        VERIFY(memcpy(GET_ELEMENT(res, res_idx, size), GET_ELEMENT(r_base, r_idx, size), size * (r_count - r_idx)));
+        ASSERT(memcpy(GET_ELEMENT(res, res_idx, size), GET_ELEMENT(r_base, r_idx, size), size * (r_count - r_idx)), "Unable to copy an element to the merging array", merge);
 
-    VERIFY(memcpy(l_base, res, res_size));
+    ASSERT(memcpy(l_base, res, res_size), "Unable to copy the merge array to the destination", merge);
 
     free(res);
 }
@@ -136,11 +120,10 @@ void merge_binary_insertion_sort(void *base, size_t count, size_t size, size_t t
     size_t half;
     void *half_base;
 
-    assert(base);
-    assert(count > 0);
-    assert(compare);
-    assert(size > 0);
-    assert(threshold >= 0);
+    ASSERT_NULL_PARAMETER(base, merge_binary_insertion_sort);
+    ASSERT_NULL_PARAMETER(compare, merge_binary_insertion_sort);
+    ASSERT(count > 0, "The array must contain at least one element", merge_binary_insertion_sort);
+    ASSERT(size > 0, "The element size cannot be zero", merge_binary_insertion_sort);
 
     if (count == 1)
         return;
@@ -159,42 +142,3 @@ void merge_binary_insertion_sort(void *base, size_t count, size_t size, size_t t
     merge(base, half, half_base, count - half, size, compare);
 }
 
-/*---------------------------------------------------------------------------------------------------------------*/
-
-// PURPOSE: Compares two ints from two generic pointers.
-static int int_comparator_fn(const void *left, const void *right) {
-    int a = *(int *) left;
-    int b = *(int *) right;
-
-    if (a > b) return 1;
-    if (a < b) return -1;
-    return 0;
-}
-
-/*---------------------------------------------------------------------------------------------------------------*/
-
-// PURPOSE: Compares two floats from two generic pointers.
-static int float_comparator_fn(const void *left, const void *right) {
-    float a = *(float *) left;
-    float b = *(float *) right;
-
-    if (a > b) return 1;
-    if (a < b) return -1;
-    return 0;
-}
-
-/*---------------------------------------------------------------------------------------------------------------*/
-
-// PURPOSE: Compares two strings from two generic pointers.
-static int string_comparator_fn(const void *left, const void *right) {
-    char *a = (char *) left;
-    char *b = (char *) right;
-
-    return strcmp(a, b);
-}
-
-/*---------------------------------------------------------------------------------------------------------------*/
-
-const compare_fn int_comparator = int_comparator_fn;
-const compare_fn float_comparator = float_comparator_fn;
-const compare_fn string_comparator = string_comparator_fn;

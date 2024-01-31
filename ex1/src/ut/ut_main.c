@@ -45,6 +45,8 @@ static float rand_float(void) {
 #define RANDOM_STRING_MIN 5
 #define RANDOM_STRING_MAX 20
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "MemoryLeak"
 static char* rand_string(void) {
     size_t length, i;
     char* str;
@@ -59,6 +61,7 @@ static char* rand_string(void) {
     str[i] = '\0';
     return str;
 }
+#pragma clang diagnostic pop
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -146,13 +149,8 @@ static void test_float_array_1000000(void) {
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
-static int compare_strings(const void* a, const void* b) {
-    char * str_a = *(char**)a;
-    char * str_b = *(char**)b;
-
-    return string_comparator(str_a, str_b);
-}
-
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "MemoryLeak"
 static void string_array_test(int size) {
     char** array;
     size_t i;
@@ -162,15 +160,16 @@ static void string_array_test(int size) {
     for (i = 0; i < size; i++)
         array[i] = rand_string();
 
-    merge_binary_insertion_sort(array, size, sizeof(char*), BEST_STRING_SORTING_THRESHOLD, compare_strings);
+    merge_binary_insertion_sort(array, size, sizeof(char*), BEST_STRING_SORTING_THRESHOLD, dyn_string_comparator);
 
-    TEST_ASSERT_TRUE(is_array_sorted(array, size, sizeof(char*), compare_strings));
+    TEST_ASSERT_TRUE(is_array_sorted(array, size, sizeof(char*), dyn_string_comparator));
 
     for (i = 0; i < size; i++)
         free(array[i]);
 
     free(array);
 }
+#pragma clang diagnostic pop
 
 static void test_string_array_10(void) {
     string_array_test(10);

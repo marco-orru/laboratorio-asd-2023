@@ -1,6 +1,6 @@
 C_COMPILER = gcc
 
-C_COMPILER_FLAGS = -std=c11 -pedantic -Wall -O3
+C_COMPILER_FLAGS = -std=c11 -pedantic -Wall -O3 -Wno-unknown-pragmas
 C_COMPILER_FLAGS_PROFILER = $(C_COMPILER_FLAGS) -DENABLE_PROFILER=1
 
 MAIN_OUTPUT_DIR = bin
