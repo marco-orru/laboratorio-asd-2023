@@ -22,4 +22,3 @@ void clear_skiplist(SkipList **list);
 void insert_skiplist(SkipList *list, void *item);
 
 const void* search_skiplist(SkipList *list, void *item);
-
