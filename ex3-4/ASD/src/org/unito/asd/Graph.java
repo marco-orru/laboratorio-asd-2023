@@ -3,6 +3,7 @@ package org.unito.asd;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 
@@ -130,8 +131,15 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   @Override
   @Contract(pure = true)
   public boolean containsEdge(@NotNull V start, @NotNull V end) {
-    var edge = new Edge<>(start, end, null);
-    return containsNode(start) && adjacencyMap.get(start).contains(edge);
+    if (!containsNode(start))
+      return false;
+
+    for (var edge : adjacencyMap.get(start)) {  // -> O(1) when the graph is really sparse
+      if (Objects.equals(end, edge.end()))
+        return true;
+    }
+
+    return false;
   }
 
   /**
@@ -148,13 +156,17 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
     if (!containsNode(node))
       return false;
 
-    for (var edge : adjacencyMap.get(node)) {
-      var edgeToRemove = new Edge<>(edge.end(), edge.start(), null);
-      adjacencyMap.get(edge.end()).remove(edgeToRemove);
-    }
-
     numEdges -= adjacencyMap.get(node).size();
     adjacencyMap.remove(node);
+
+    for (var edges : adjacencyMap.values()) {
+      for (var edge : edges) {  // -> O(1) when the graph is really sparse
+        if (Objects.equals(edge.end(), node)) {
+          edges.remove(edge);
+          break;
+        }
+      }
+    }
 
     return true;
   }
@@ -174,14 +186,22 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
     if (!containsEdge(start, end))
       return false;
 
-    var edge = new Edge<>(start, end, null);
-    adjacencyMap.get(start).remove(edge);
+    for (var edge : adjacencyMap.get(start)) {  // -> O(1) when the graph is really sparse
+      if (Objects.equals(edge.end(), end)) {
+        adjacencyMap.get(start).remove(edge);
+        break;
+      }
+    }
 
     numEdges--;
 
     if (!directed) {
-      edge = new Edge<>(end, start, null);
-      adjacencyMap.get(end).remove(edge);
+      for (var edge : adjacencyMap.get(end)) {  // -> O(1) when the graph is really sparse
+        if (Objects.equals(edge.end(), start)) {
+          adjacencyMap.get(end).remove(edge);
+          break;
+        }
+      }
     }
 
     return true;
@@ -211,24 +231,47 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
    * Gets a readonly collection of all the nodes in the graph.
    * The collection will be empty if the graph is empty.
    * @return A collection of all the nodes in the graph.
-   * @implNote  This operation has linear time complexity O(N).
+   * @implNote  This operation has constant time complexity O(1).
    */
   @Override
   @Contract(pure = true)
-  public AbstractCollection<V> getNodes() {
-    return null;
+  public @NotNull @Unmodifiable AbstractCollection<V> getNodes() {
+    return new AbstractCollection<>() {
+      @Override
+      public @NotNull Iterator<V> iterator() {
+        return adjacencyMap.keySet().iterator();
+      }
+
+      @Override
+      public int size() {
+        return adjacencyMap.keySet().size();
+      }
+    };
   }
 
   /**
    * Gets a collection of all the edges in the graph.
    * The collection will be empty if there are no edges in the graph.
    * @return A collection of all the edges in the graph.
-   * @implNote  This operation has linear time complexity O(N).
+   * @implNote This operation has linear time complexity O(N).
    */
   @Override
   @Contract(pure = true)
-  public AbstractCollection<? extends AbstractEdge<V, L>> getEdges() {
-    return null; // TODO
+  public @NotNull @Unmodifiable AbstractCollection<? extends AbstractEdge<V, L>> getEdges() {
+    var edges = new HashSet<AbstractEdge<V, L>>();
+    adjacencyMap.values().forEach(edges::addAll);  // -> O(N) + O(1) when the graph is really sparse
+
+    return new AbstractCollection<>() {
+      @Override
+      public @NotNull Iterator<AbstractEdge<V, L>> iterator() {
+        return edges.iterator();
+      }
+
+      @Override
+      public int size() {
+        return edges.size();
+      }
+    };
   }
 
   /**
@@ -241,8 +284,23 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
    */
   @Override
   @Contract(pure = true)
-  public AbstractCollection<V> getNeighbours(@NotNull V node) throws IllegalStateException {
-    return null; // TODO
+  public @NotNull @Unmodifiable AbstractCollection<V> getNeighbours(@NotNull V node) throws IllegalStateException {
+    if (!containsNode(node))
+      throw new IllegalStateException("The graph does not contain the node");
+
+    var neighbours = new HashSet<V>();
+    adjacencyMap.get(node).forEach(edge -> neighbours.add(edge.end()));  // -> O(1) when the graph is really sparse
+    return new AbstractCollection<>() {
+      @Override
+      public @NotNull Iterator<V> iterator() {
+        return neighbours.iterator();
+      }
+
+      @Override
+      public int size() {
+        return neighbours.size();
+      }
+    };
   }
 
   /**
@@ -258,6 +316,14 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   @Override
   @Contract(pure = true)
   public @Nullable L getLabel(@NotNull V start, @NotNull V end) throws IllegalStateException {
-    return null;  // TODO
+    if (!labelled)
+      throw new IllegalStateException("Cannot retrieve label from a non labelled graph");
+
+    for (var edge : adjacencyMap.get(start)) {   // -> O(1) when the graph is really sparse
+      if (Objects.equals(end, edge.end()))
+        return edge.label();
+    }
+
+    return null;
   }
 }
