@@ -57,7 +57,7 @@ void clear_skiplist(SkipList **list) {
 /*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Returns a number between 0 and 1,
-static int random(void) {
+static int flip_coin(void) {
   static int random_initialized = 0;
 
   if (!random_initialized) {
@@ -76,7 +76,7 @@ static size_t random_level(size_t max_height) {
 
   level = 1;
 
-  while (random() && level < max_height)
+  while (flip_coin() && level < max_height)
     level++;
 
   return level;
