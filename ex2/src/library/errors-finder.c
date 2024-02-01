@@ -18,7 +18,7 @@ static void load_dictionary(FILE *dict_file, SkipList *dictionary) {
   while (fgets(line_buffer, MAX_WORD_LENGTH, dict_file)) {
     word_len = strlen(line_buffer);
     word = (char *) malloc(sizeof(char) * word_len);
-    strncpy(word, line_buffer, word_len);
+    strncpy(word, line_buffer, word_len + 1);
     word[word_len - 1] = '\0';
     insert_skiplist(dictionary, word);
   }
@@ -99,6 +99,7 @@ static size_t words_capacity = 0;
 static void load_text(FILE* text_file) {
   const char* word;
   char* word_to_alloc;
+  size_t word_to_alloc_length;
 
   words = (char**) malloc(sizeof(char*) * INIT_WORDS_CAPACITY);
   words_count = 0;
@@ -111,10 +112,12 @@ static void load_text(FILE* text_file) {
       ASSERT(words, "Unable to reallocate the words array", text_file);
     }
 
-    word_to_alloc = (char*) malloc(sizeof(char) * strlen(word));
+    word_to_alloc_length = strlen(word);
+    word_to_alloc = (char*) malloc(sizeof(char) * word_to_alloc_length);
     ASSERT(word_to_alloc, "Unable to allocate memory for a word", load_text);
 
-    strcpy(word_to_alloc, word);
+    strncpy(word_to_alloc, word, word_to_alloc_length + 1);
+    word_to_alloc[word_to_alloc_length - 1] = '\0';
     words[words_count++] = word_to_alloc;
   }
 }

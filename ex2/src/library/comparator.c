@@ -1,6 +1,10 @@
 #include <string.h>
 #include "comparator.h"
 
+#ifndef __WIN32
+#include <strings.h>
+#endif
+
 /*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: Compares two ints from two generic pointers.

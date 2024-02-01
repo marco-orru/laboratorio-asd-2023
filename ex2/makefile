@@ -7,9 +7,9 @@ MAIN_OUTPUT_DIR = bin
 PROFILER_OUTPUT_DIR = $(MAIN_OUTPUT_DIR)/profiler
 UT_OUTPUT_DIR = $(MAIN_OUTPUT_DIR)/ut
 
-MAIN_NAME = main_ex1
-PROFILER_NAME = profiler_ex1
-UT_NAME = ut_ex1
+MAIN_NAME = main_ex2
+PROFILER_NAME = profiler_ex2
+UT_NAME = ut_ex2
 
 SRC_DIR = src
 LIB_DIR = $(SRC_DIR)/library
@@ -18,17 +18,17 @@ UT_DIR = $(SRC_DIR)/ut
 UT_SUITE_DIR = $(UT_DIR)/suite
 
 MAIN_SOURCES = $(SRC_DIR)/main.c 						\
-               $(LIB_DIR)/merge-binary-insertion-sort.c \
-               $(LIB_DIR)/records-sorter.c				\
+               $(LIB_DIR)/skip-list.c					\
+               $(LIB_DIR)/errors-finder.c				\
                $(LIB_DIR)/comparator.c
 
-PROFILER_SOURCES = $(SRC_DIR)/profiler_main.c 			\
-               $(LIB_DIR)/merge-binary-insertion-sort.c \
-               $(LIB_DIR)/records-sorter.c				\
+PROFILER_SOURCES = $(PROFILER_DIR)/profiler_main.c		\
+               $(LIB_DIR)/skip-list.c					\
+               $(LIB_DIR)/errors-finder.c				\
                $(LIB_DIR)/comparator.c
 
 UT_SOURCES = $(UT_DIR)/ut_main.c						\
-		     $(LIB_DIR)/merge-binary-insertion-sort.c	\
+		     $(LIB_DIR)/skip-list.c						\
 		     $(UT_SUITE_DIR)/unity.c					\
 		     $(LIB_DIR)/comparator.c
 
