@@ -23,7 +23,6 @@ typedef enum FieldId {
     FIELD_FLOAT
 } FieldId;
 
-#if !ENABLE_PROFILER
 /**
  * @brief Reads the records stored in the provided file, then sorts the fields of the specified type and saves the sorted
  * records in another file.
@@ -34,13 +33,23 @@ typedef enum FieldId {
  * @param field_id The type of the fields to be sorted.
  */
 void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, FieldId field_id);
-#else
-void sort_records(FILE *in_file, size_t sorting_threshold, FieldId field_id);
-#endif
 
-#if ENABLE_PROFILER
+#if __PROFILER
 /**
- * @brief When the profiler is enabled, releases the resources used for speed-up profiling.
+ * @brief Initializes he profiler loading the records.
+ * @param in_file The .csv file containing the records.
  */
-void records_sorter__release_profiler(void);
+void init_profiler__records_sorter(FILE* in_file);
+
+/**
+ * @brief Shutdowns the profiler.
+ */
+void shutdown_profiler__records_sorter(void);
+
+/**
+ * @brief Profile the execution of the sorting algorithm over the unsorted array.
+ * @param threshold The sorting threshold to be passed to the sorting algorithm.
+ * @param field_id The type of fields to be sorted.
+ */
+void profile__records_sorter(size_t threshold, FieldId field_id);
 #endif

@@ -1,4 +1,5 @@
 #pragma once
+#include <stdio.h>
 #include <stdlib.h>
 
 /**
@@ -6,7 +7,7 @@
  */
 #define PRINT_ERROR(msg, fn)                                            \
 do {                                                                    \
-    fprintf(stderr, "RUNTIME_ERROR[" __FILE__ ":" #fn "]: " msg);       \
+    fprintf(stderr, "RUNTIME_ERROR(" #fn "): " msg);       \
     fflush(stderr);                                                     \
     abort();                                                            \
 } while(0)

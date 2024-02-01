@@ -6,6 +6,7 @@ set(CMAKE_C_STANDARD 11)
 add_compile_options("-Wall" "-pedantic" "-O3" "-Wno-unknown-pragmas")
 
 set(MAIN_OUTPUT_DIR "../bin")
+set(PROFILER_OUTPUT_DIR "${MAIN_OUTPUT_DIR}/profiler")
 set(UT_OUTPUT_DIR "${MAIN_OUTPUT_DIR}/ut")
 
 set(MAIN_NAME "main_ex1")
@@ -14,6 +15,7 @@ set(UT_NAME "ut_ex1")
 
 set(SRC_DIR "src")
 set(LIB_DIR "${SRC_DIR}/library")
+set(PROFILER_DIR "${SRC_DIR}/profiler")
 set(UT_DIR "${SRC_DIR}/ut")
 set(UT_SUITE_DIR "${UT_DIR}/suite")  # Unity
 
@@ -31,19 +33,18 @@ set_target_properties(${MAIN_NAME} PROPERTIES
 target_include_directories(${MAIN_NAME} PRIVATE ${LIB_DIR})
 
 add_executable(${PROFILER_NAME}
-        "${SRC_DIR}/main.c"
+        "${PROFILER_DIR}/profiler_main.c"
         "${LIB_DIR}/merge-binary-insertion-sort.c"
         "${LIB_DIR}/records-sorter.c"
         "${LIB_DIR}/comparator.c"
 )
 
 set_target_properties(${PROFILER_NAME} PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${MAIN_OUTPUT_DIR}
+        RUNTIME_OUTPUT_DIRECTORY ${PROFILER_OUTPUT_DIR}
 )
 
-target_include_directories(${PROFILER_NAME} PRIVATE ${LIB_DIR})
-
-target_compile_definitions(${PROFILER_NAME} PRIVATE ENABLE_PROFILER=1)
+target_include_directories(${PROFILER_NAME} PRIVATE ${LIB_DIR} ${PROFILER_DIR})
+target_compile_definitions(${PROFILER_NAME} PRIVATE "__PROFILER")
 
 add_executable(${UT_NAME}
         "${UT_DIR}/ut_main.c"

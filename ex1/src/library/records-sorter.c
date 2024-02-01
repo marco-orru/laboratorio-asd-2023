@@ -5,14 +5,6 @@
 #include "assert_util.h"
 #include "records-sorter.h"
 
-#ifndef ENABLE_PROFILER
-#define ENABLE_PROFILER 0
-#endif
-
-#if ENABLE_PROFILER
-#include <time.h>
-#endif
-
 /*---------------------------------------------------------------------------------------------------------------*/
 
 // PURPOSE: The max length of a line.
@@ -52,7 +44,6 @@ while (0)
 /*---------------------------------------------------------------------------------------------------------------*/
 
 static void load_record(char* line, Record* records, size_t index) {
-
     char* field;
 
     field = strtok(line, ",");
@@ -68,20 +59,21 @@ static void load_record(char* line, Record* records, size_t index) {
     LOAD_FLOAT(records, index, field); // NOLINT(*-err34-c)
 }
 
-// PURPOSE: Loads the record from a file, and saves them into the records array.
+/*---------------------------------------------------------------------------------------------------------------*/
+
+// PURPOSE: Loads the records from a file, and saves them into the records array.
 static void load_records(FILE *in_file, Record *records) {
     char line_buffer[LINE_BUFFER_SIZE];
-    size_t i;
+    size_t count;
 
-    i = 0;
+    count = 0;
 
-    while (i < NUMBER_OF_RECORDS && fgets(line_buffer, LINE_BUFFER_SIZE, in_file))
-        load_record(line_buffer, records, i++);
+    while (count < NUMBER_OF_RECORDS && fgets(line_buffer, LINE_BUFFER_SIZE, in_file))
+        load_record(line_buffer, records, count++);
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
-#if !ENABLE_PROFILER
 // PURPOSE: Writes the records array into the specified file.
 static void store_records(FILE *out_file, Record *records) {
     int i;
@@ -96,7 +88,6 @@ static void store_records(FILE *out_file, Record *records) {
                 record->float_field);
     }
 }
-#endif
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -123,78 +114,27 @@ static int compare_records_fn(const void* record_a, const void* record_b) {
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
-#if ENABLE_PROFILER
-static Record* g_unsorted_records;
-#endif
-
-#if ENABLE_PROFILER
-void sort_records(FILE *in_file, size_t sorting_threshold, FieldId field_id)
-#else
-void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, FieldId field_id)
-#endif
-{
+void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, FieldId field_id) {
     Record *records;
 
-#if ENABLE_PROFILER
-    clock_t begin, end;
-    char field_name[16];
-#endif
-
     ASSERT_NULL_PARAMETER(in_file, sort_records);
+    ASSERT_NULL_PARAMETER(out_file, sort_records);
     ASSERT(sorting_threshold >= 0, "The sorting threshold must be >= 0", sort_records);
     ASSERT(field_id >= FIELD_STRING && field_id <= FIELD_FLOAT, "The field id is not in the valid range [1, 3]", sort_records);
-
-#if !ENABLE_PROFILER
     ASSERT(in_file != out_file, "The two provided files are pointing to the same file", sort_records);
-    ASSERT_NULL_PARAMETER(out_file, sort_records);
-#endif
 
     g_field_id = field_id;
 
-    records = (Record*)malloc(sizeof(Record) * NUMBER_OF_RECORDS);
+    records = (Record*) malloc(sizeof(Record) * NUMBER_OF_RECORDS);
 
     ASSERT(records, "Unable to allocate memory for records", sort_records);
 
-#if ENABLE_PROFILER
-    if (!g_unsorted_records) {
-        g_unsorted_records = malloc(sizeof(Record) * NUMBER_OF_RECORDS);
-        load_records(in_file, records);
-        memcpy(g_unsorted_records, records, sizeof(Record) * NUMBER_OF_RECORDS);
-    } else {
-        memcpy(records, g_unsorted_records, sizeof(Record) * NUMBER_OF_RECORDS);
-    }
-#endif
-
+    printf("Loading records...\n");
     load_records(in_file, records);
-
-#if ENABLE_PROFILER
-    begin = clock();
-#endif
-
+    printf("Sorting records...\n");
     merge_binary_insertion_sort(records, NUMBER_OF_RECORDS, sizeof(Record), sorting_threshold, compare_records_fn);
-
-#if ENABLE_PROFILER
-    end = clock();
-
-    switch (field_id) {
-        case FIELD_STRING:
-            strcpy(field_name, "STRING");
-            break;
-        case FIELD_INTEGER:
-            strcpy(field_name, "INT");
-            break;
-        case FIELD_FLOAT:
-            strcpy(field_name, "FLOAT");
-            break;
-    }
-
-    printf("[PROFILER] Records sorted [%s, THRESHOLD: %zu]. Elapsed time: %f seconds.\n",
-           field_name,
-           sorting_threshold,
-           (double) (end - begin) / CLOCKS_PER_SEC);
-#else
+    printf("Storing records...\n");
     store_records(out_file, records);
-#endif
 
     free((void*)records);
 
@@ -203,9 +143,78 @@ void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, Field
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
-#if ENABLE_PROFILER
-void records_sorter__release_profiler(void) {
-    free((void*)g_unsorted_records);
-    g_unsorted_records = NULL;
+#if __PROFILER
+#include <time.h>
+
+#define PROFILER_PRINT(msg) printf("[PROFILER]: " msg "\n")
+#define PROFILER_PRINT_RESULT(threshold, field_id, start, end) \
+    printf("[PROFILER]<field=%s, threshold=%zu>: Sorted in %f seconds.\n", get_field_name((field_id)), (threshold), (double) ((end) - (start)) / CLOCKS_PER_SEC)
+
+static Record* unsorted_records = NULL;
+
+void init_profiler__records_sorter(FILE* in_file) {
+    ASSERT_NULL_PARAMETER(in_file, init_profiler__records_sorter);
+    ASSERT(!unsorted_records, "Profiler has been already initialized", init_profiler__records_sorter);
+
+    PROFILER_PRINT("Initializing profiler...");
+
+    PROFILER_PRINT("Allocating unsorted records...");
+    unsorted_records = (Record*) malloc(sizeof(Record) * NUMBER_OF_RECORDS);
+    ASSERT(unsorted_records, "Unable to allocate memory for the unsorted records array", init_profiler__records_sorter);
+
+    PROFILER_PRINT("Loading records...");
+    load_records(in_file, unsorted_records);
+
+    PROFILER_PRINT("Profiler initialized.");
+}
+
+void shutdown_profiler__records_sorter(void) {
+    ASSERT(unsorted_records, "Profiler already shut down", shutdown_profiler__records_sorter);
+
+    PROFILER_PRINT("Shutting down profiler...");
+
+    PROFILER_PRINT("Deallocating unsorted records...");
+    free((void*)unsorted_records);
+
+    PROFILER_PRINT("Profiler shut down.");
+}
+
+static const char* get_field_name(FieldId field_id) {
+    switch (field_id) {
+        case FIELD_STRING:
+            return "STRING";
+        case FIELD_INTEGER:
+            return "INTEGER";
+        case FIELD_FLOAT:
+            return "FLOAT";
+    }
+
+    PRINT_ERROR("Invalid field ID", get_field_name);
+    return 0;
+}
+
+void profile__records_sorter(size_t threshold, FieldId field_id) {
+    Record* to_be_sorted;
+    clock_t start, end;
+
+    ASSERT(threshold >= 0, "The sorting threshold must be >= 0", profile__records_sorter);
+    ASSERT(field_id >= FIELD_STRING && field_id <= FIELD_FLOAT, "The field id is not in the valid range [1, 3]", profile__records_sorter);
+
+    to_be_sorted = (Record*) malloc(sizeof(Record) * NUMBER_OF_RECORDS);
+    ASSERT(to_be_sorted, "Unable to allocate memory for records to be sorted", profile__records_sorter);
+
+    ASSERT(memcpy(to_be_sorted, unsorted_records, sizeof(Record) * NUMBER_OF_RECORDS), "Unable to copy the unsorted records array", profile__records_sorter);
+
+    g_field_id = field_id;
+
+    start = clock();
+    merge_binary_insertion_sort(to_be_sorted, NUMBER_OF_RECORDS, sizeof(Record), threshold, compare_records_fn);
+    end = clock();
+
+    PROFILER_PRINT_RESULT(threshold, field_id, start, end);
+
+    free((void*)to_be_sorted);
+
+    g_field_id = -1;
 }
 #endif
