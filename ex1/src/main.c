@@ -18,9 +18,8 @@ enum Args {
 
 // PURPOSE: Performs the processing of the input file, reading and sorting the specified field, and saving the result
 //          in the specified file.
-static int process_file(const char *in_path, const char *out_path, size_t sorting_threshold, FieldId field_id) {
-  FILE *in_file;
-  FILE *out_file;
+static void process_file(const char *in_path, const char *out_path, size_t sorting_threshold, FieldId field_id) {
+  FILE *in_file, *out_file;
 
   in_file = fopen(in_path, "r");
   ASSERT(in_file, "Unable to open the input file", process_file);
@@ -32,8 +31,6 @@ static int process_file(const char *in_path, const char *out_path, size_t sortin
 
   ASSERT(!fclose(out_file), "Unable to close the output file", process_file);
   ASSERT(!fclose(in_file), "Unable to close the input file", process_file);
-
-  return EXIT_SUCCESS;
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/
