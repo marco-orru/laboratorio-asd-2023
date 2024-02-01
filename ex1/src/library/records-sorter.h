@@ -15,12 +15,12 @@
  * @brief Defines the types of fields that can be read from the record file.
  */
 typedef enum FieldId {
-    /** @brief Reads the string field. */
-    FIELD_STRING,
-    /** @brief Reads the integer field */
-    FIELD_INTEGER,
-    /** @brief Reads the float field */
-    FIELD_FLOAT
+  /** @brief Reads the string field. */
+  FIELD_STRING,
+  /** @brief Reads the integer field */
+  FIELD_INTEGER,
+  /** @brief Reads the float field */
+  FIELD_FLOAT
 } FieldId;
 
 /**
@@ -35,11 +35,12 @@ typedef enum FieldId {
 void sort_records(FILE *in_file, FILE *out_file, size_t sorting_threshold, FieldId field_id);
 
 #if __PROFILER
+
 /**
  * @brief Initializes he profiler loading the records.
  * @param in_file The .csv file containing the records.
  */
-void init_profiler__records_sorter(FILE* in_file);
+void init_profiler__records_sorter(FILE *in_file);
 
 /**
  * @brief Shutdowns the profiler.
@@ -52,4 +53,5 @@ void shutdown_profiler__records_sorter(void);
  * @param field_id The type of fields to be sorted.
  */
 void profile__records_sorter(size_t threshold, FieldId field_id);
+
 #endif
