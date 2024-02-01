@@ -12,7 +12,7 @@ import java.util.*;
  * @param <L> The type of labels associated with edges in the graph.
  */
 public final class Graph<V, L> implements AbstractGraph<V, L> {
-  private final Map<V, Set<AbstractEdge<V, L>>> adjacency;
+  private final Map<V, Set<AbstractEdge<V, L>>> adjacencyMap;
   private final boolean directed;
   private final boolean labelled;
   private int numEdges;
@@ -23,7 +23,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
    * @param labelled {@code true} if the graph is labelled, {@code false} otherwise.
    */
   public Graph(boolean directed, boolean labelled) {
-    this.adjacency = new HashMap<>();
+    this.adjacencyMap = new HashMap<>();
     this.directed = directed;
     this.labelled = labelled;
     this.numEdges = 0;
@@ -65,7 +65,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
     if (containsNode(node))
       return false;
 
-    adjacency.put(node, new HashSet<>());
+    adjacencyMap.put(node, new HashSet<>());
     return true;
   }
 
@@ -93,14 +93,14 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
       return false;
 
     var edge = new Edge<>(start, end, label);
-    if (!adjacency.get(start).add(edge))
+    if (!adjacencyMap.get(start).add(edge))
       return true;  // Already present, but it's not an error.
 
     numEdges++;
 
     if (!directed) {
       edge = new Edge<>(end, start, label);
-      adjacency.get(end).add(edge);
+      adjacencyMap.get(end).add(edge);
     }
 
     return true;
@@ -116,7 +116,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   @Override
   @Contract(pure = true)
   public boolean containsNode(@NotNull V node) {
-    return adjacency.containsKey(node);
+    return adjacencyMap.containsKey(node);
   }
 
   /**
@@ -131,7 +131,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   @Contract(pure = true)
   public boolean containsEdge(@NotNull V start, @NotNull V end) {
     var edge = new Edge<>(start, end, null);
-    return containsNode(start) && adjacency.get(start).contains(edge);
+    return containsNode(start) && adjacencyMap.get(start).contains(edge);
   }
 
   /**
@@ -145,7 +145,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   @Override
   @Contract(mutates = "this")
   public boolean removeNode(@NotNull V node) {
-    return false;  // TODO
+    return false;
   }
 
   /**
@@ -160,7 +160,20 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   @Override
   @Contract(mutates = "this")
   public boolean removeEdge(@NotNull V start, @NotNull V end) {
-    return false;  // TODO
+    if (!containsEdge(start, end))
+      return false;
+
+    var edge = new Edge<>(start, end, null);
+    adjacencyMap.get(start).remove(edge);
+
+    numEdges--;
+
+    if (!directed) {
+      edge = new Edge<>(end, start, null);
+      adjacencyMap.get(end).remove(edge);
+    }
+
+    return true;
   }
 
   /**
@@ -170,7 +183,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
    */
   @Override
   public int numNodes() {
-    return adjacency.size();
+    return adjacencyMap.size();
   }
 
   /**
@@ -184,15 +197,15 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   }
 
   /**
-   * Gets a collection of all the nodes in the graph.
+   * Gets a readonly collection of all the nodes in the graph.
    * The collection will be empty if the graph is empty.
    * @return A collection of all the nodes in the graph.
    * @implNote  This operation has linear time complexity O(N).
    */
   @Override
   @Contract(pure = true)
-  public Collection<V> getNodes() {
-    return null;  // TODO
+  public AbstractCollection<V> getNodes() {
+    return null;
   }
 
   /**
@@ -203,8 +216,8 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
    */
   @Override
   @Contract(pure = true)
-  public Collection<? extends AbstractEdge<V, L>> getEdges() {
-    return null;  // TODO
+  public AbstractCollection<? extends AbstractEdge<V, L>> getEdges() {
+    return null; // TODO
   }
 
   /**
@@ -217,7 +230,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
    */
   @Override
   @Contract(pure = true)
-  public Collection<V> getNeighbours(@NotNull V node) throws IllegalStateException {
+  public AbstractCollection<V> getNeighbours(@NotNull V node) throws IllegalStateException {
     return null; // TODO
   }
 

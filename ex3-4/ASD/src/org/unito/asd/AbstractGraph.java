@@ -2,6 +2,7 @@ package org.unito.asd;
 
 import org.jetbrains.annotations.Contract;
 
+import java.util.AbstractCollection;
 import java.util.Collection;
 
 /**
@@ -107,7 +108,7 @@ public interface AbstractGraph<V, L> {
    * @implSpec This operation shall have linear time complexity O(N).
    */
   @Contract(pure = true)
-  Collection<V> getNodes();
+  AbstractCollection<V> getNodes();
 
   /**
    * Gets a collection of all the edges in the graph.
@@ -115,7 +116,7 @@ public interface AbstractGraph<V, L> {
    * @implSpec This operation shall have linear time complexity O(N).
    */
   @Contract(pure = true)
-  Collection<? extends AbstractEdge<V,L>> getEdges();
+  AbstractCollection<? extends AbstractEdge<V,L>> getEdges();
 
   /**
    * Get a collection of neighboring nodes for the given node.
@@ -124,7 +125,7 @@ public interface AbstractGraph<V, L> {
    * @implSpec This operation has constant time complexity O(1).
    */
   @Contract(pure = true)
-  Collection<V> getNeighbours(V node);
+  AbstractCollection<V> getNeighbours(V node);
 
   /**
    * Gets the label associated with an edge between nodes {@code start} and node {@code end}.
