@@ -23,6 +23,14 @@ public interface AbstractGraph<V, L> {
    */
   @Contract(pure = true)
   boolean isLabelled();
+
+  /**
+   * Gets the number of nodes in the graph.
+   * @return The number of nodes in the graph.
+   * @implSpec This operation shall have constant time complexity O(1).
+   */
+  @Contract(pure = true)
+  int numNodes();
 }
 
 /*

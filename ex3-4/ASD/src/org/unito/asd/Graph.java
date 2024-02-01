@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Contract;
 public final class Graph<V, L> implements AbstractGraph<V, L> {
   private final boolean directed;
   private final boolean labelled;
+  private int numNodes;
 
   /**
    * Constructs a new {@link Graph} with the specified characteristics.
@@ -19,6 +20,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   public Graph(boolean directed, boolean labelled) {
     this.directed = directed;
     this.labelled = labelled;
+    this.numNodes = 0;
   }
 
   /**
@@ -39,5 +41,14 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   @Contract(pure = true)
   public boolean isLabelled() {
     return this.labelled;
+  }
+
+  /**
+   * {@inheritDoc}
+   * @implNote This operation have constant time complexity O(1).
+   */
+  @Override
+  public int numNodes() {
+    return this.numNodes;
   }
 }
