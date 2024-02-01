@@ -1,7 +1,8 @@
 package org.unito.asd;
 
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
 
 /**
  * Defines an interface representing a graph with generic nodes and edge labels.
@@ -27,52 +28,62 @@ public interface AbstractGraph<V, L> {
 
   /**
    * Adds a node to the graph.
-   * The node shall not be {@code null}.
-   * A node is being added if and only if it is not already present in the graph.
    * @param node The node to be added.
    * @return {@code true} if the node was successfully added, {@code false} otherwise.
    * @implSpec This operation shall have constant time complexity O(1).
    */
   @Contract(mutates = "this")
-  boolean addNode(@NotNull V node);
+  boolean addNode(V node);
 
   /**
    * Adds an edge from node {@code start} to node {@code end} if the graph is directed, or between
    * node {@code start} to node {@code end} if the graph is undirected.
-   * The provided nodes shall not be {@code null}.
-   * The provided label shall not be {@code null} if the graph is labelled.
-   * An edge can be added if and only if the graph contains the two nodes.
-   * If an edge already exists between the two nodes then this function returns {@code true}, but no operation is being made.
    * @param start The start node of the edge.
    * @param end The end node of the edge.
    * @param label The label associated with the edge (it is ignored if the graph is not labelled).
    * @return {@code true} if the edge was successfully added, {@code false otherwise}.
-   * @exception IllegalArgumentException If {@code label} is {@code null} and the graph is labelled.
    * @implSpec This operation shall have constant time complexity O(1).
    */
   @Contract(mutates = "this")
-  boolean addEdge(@NotNull V start, @NotNull V end, L label) throws IllegalArgumentException;
+  boolean addEdge(V start, V end, L label);
 
   /**
    * Checks if a node is present in the graph.
-   * The node shall not be {@code null}.
    * @param node The node to check for.
    * @return {@code true} if the node is present in the graph, {@code false} otherwise.
    * @implSpec This operation shall have constant time complexity O(1).
    */
   @Contract(pure = true)
-  boolean containsNode(@NotNull V node);
+  boolean containsNode(V node);
 
   /**
    * Checks if a node is present from node {@code start} to {@code end} if the graph is directed, or between {@code start} and
    * {@code end} if the graph is undirected.
-   * The nodes shall not be {@code null}.
    * @param start The start node of the edge.
    * @param end The end node of the edge.
    * @return {@code true} if the graph contains the edge, {@code false otherwise}.
    */
   @Contract(pure = true)
-  boolean containsEdge(@NotNull V start, @NotNull V end);
+  boolean containsEdge(V start, V end);
+
+  /**
+   * Removes a node from the graph, deleting also the edges linked from and linked to it.
+   * @param node The node to be removed.
+   * @return {@code true} if the node was successfully removed, {@code false} otherwise.
+   * @implSpec This operation shall have linear time complexity O(N).
+   */
+  @Contract(mutates = "this")
+  boolean removeNode(V node);
+
+  /**
+   * Removes an edge between two nodes from the graph.
+   * @param start The start node of the edge.
+   * @param end The end node of the edge.
+   * @return {@code true} if the edge was successfully removed, {@code false} otherwise.
+   * @implSpec This operation shall have constant time complexity O(1).
+   */
+  @Contract(mutates = "this")
+  boolean removeEdge(V start, V end);
 
   /**
    * Gets the number of nodes in the graph.
@@ -87,18 +98,41 @@ public interface AbstractGraph<V, L> {
    * @return The number of edges in the graph.
    * @implSpec This operation shall have linear time complexity O(n).
    */
+  @Contract(pure = true)
   int numEdges();
+
+  /**
+   * Gets a collection of all the nodes in the graph.
+   * @return A collection of all the nodes in the graph.
+   * @implSpec This operation shall have linear time complexity O(N).
+   */
+  @Contract(pure = true)
+  Collection<V> getNodes();
+
+  /**
+   * Gets a collection of all the edges in the graph.
+   * @return A collection of all the edges in the graph.
+   * @implSpec This operation shall have linear time complexity O(N).
+   */
+  @Contract(pure = true)
+  Collection<? extends AbstractEdge<V,L>> getEdges();
+
+  /**
+   * Get a collection of neighboring nodes for the given node.
+   * @param node The node for which neighbours are to be received.
+   * @return A collection of neighbouring nodes for the given node.
+   * @implSpec This operation has constant time complexity O(1).
+   */
+  @Contract(pure = true)
+  Collection<V> getNeighbours(V node);
+
+  /**
+   * Gets the label associated with an edge between nodes {@code start} and node {@code end}.
+   * @param start The start node of the edge.
+   * @param end The end node of the edge.
+   * @return The label associated with the edge.
+   * @implSpec This operation has constant time complexity O(1).
+   */
+  @Contract(pure = true)
+  L getLabel(V start, V end);
 }
-
-/*
-public interface AbstractGraph<V,L> {
-  public boolean removeNode(V a); // rimuove un nodo dal grafo -- O(N)
-  public boolean removeEdge(V a, V b); // rimuove un arco dal grafo -- O(1) (*)
-
-  public Collection<V> getNodes(); // recupero dei nodi del grafo -- O(N)
-  public Collection<? extends AbstractEdge<V,L>> getEdges(); // recupero degli archi del grafo -- O(N)
-  public Collection<V> getNeighbours(V a); // recupero dei nodi adiacenti ad un dato nodo -- O(1) (*)
-  public L getLabel(V a, V b); // recupero dell'etichetta di un arco -- O(1) (*)
-};
-
- */
