@@ -3,32 +3,16 @@ package org.unito.asd;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-public final class Edge<V, L> implements AbstractEdge<V, L> {
-  private final V start;
-  private final V end;
-  private final L label;
-
-  public Edge(@NotNull V start, @NotNull V end, L label) {
-    this.start = start;
-    this.end = end;
-    this.label = label;
-  }
-
-  @Override
-  @Contract(pure = true)
-  public V getStart() {
-    return start;
-  }
-
-  @Override
-  @Contract(pure = true)
-  public V getEnd() {
-    return end;
-  }
-
-  @Override
-  @Contract(pure = true)
-  public L getLabel() {
-    return label;
-  }
-}
+/**
+ * Represents an edge between to nodes of a {@link Graph}.
+ * @param start The start node. It can't be {@code null}.
+ * @param end The end node. It can't be {@code null}.
+ * @param label The label associated with the edge.
+ * @param <V> Type of nodes in the graph.
+ * @param <L> Type of labels associated with edges in the graph.
+ */
+public record Edge<V, L>(
+        @Contract(pure = true) @NotNull V start,
+        @Contract(pure = true) @NotNull V end,
+        @Contract(pure = true) L label
+) implements AbstractEdge<V, L> { }

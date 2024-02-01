@@ -56,7 +56,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   @Override
   @Contract(mutates = "this")
   public boolean addNode(@NotNull V node) {
-    if (adjacencyList.containsKey(node))   // TODO: Replace with contains method when implemented
+    if (containsNode(node))
       return false;
 
     adjacencyList.put(node, new HashSet<>());
@@ -74,7 +74,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
     if (labelled && label == null)
       throw new IllegalArgumentException("The label of an edge can't be 'null' in a labelled graph.");
 
-    if (!adjacencyList.containsKey(start) || !adjacencyList.containsKey(end))  // TODO: replace with contains method when implemented.
+    if (!containsNode(start) || !containsNode(end))
       return false;
 
     var edge = new Edge<>(start, end, label);
@@ -87,6 +87,27 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
     }
 
     return true;
+  }
+
+  /**
+   * {@inheritDoc}
+   * @implNote This operation has constant time complexity O(1).
+   */
+  @Override
+  @Contract(pure = true)
+  public boolean containsNode(@NotNull V node) {
+    return adjacencyList.containsKey(node);
+  }
+
+  /**
+   * {@inheritDoc}
+   * @implNote This operation has constant time complexity O(1).
+   */
+  @Override
+  @Contract(pure = true)
+  public boolean containsEdge(@NotNull V start, @NotNull V end) {
+    var edge = new Edge<>(start, end, null);
+    return containsNode(start) && adjacencyList.get(start).contains(edge);
   }
 
   /**

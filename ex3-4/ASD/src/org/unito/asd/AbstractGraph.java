@@ -42,8 +42,7 @@ public interface AbstractGraph<V, L> {
    * The provided nodes shall not be {@code null}.
    * The provided label shall not be {@code null} if the graph is labelled.
    * An edge can be added if and only if the graph contains the two nodes.
-   * If an edge already exists between the two nodes (eventually with the same label, if the graph is labelled)
-   * then this function returns {@code true}, but no operation is being made.
+   * If an edge already exists between the two nodes then this function returns {@code true}, but no operation is being made.
    * @param start The start node of the edge.
    * @param end The end node of the edge.
    * @param label The label associated with the edge (it is ignored if the graph is not labelled).
@@ -53,6 +52,27 @@ public interface AbstractGraph<V, L> {
    */
   @Contract(mutates = "this")
   boolean addEdge(@NotNull V start, @NotNull V end, L label) throws IllegalArgumentException;
+
+  /**
+   * Checks if a node is present in the graph.
+   * The node shall not be {@code null}.
+   * @param node The node to check for.
+   * @return {@code true} if the node is present in the graph, {@code false} otherwise.
+   * @implSpec This operation shall have constant time complexity O(1).
+   */
+  @Contract(pure = true)
+  boolean containsNode(@NotNull V node);
+
+  /**
+   * Checks if a node is present from node {@code start} to {@code end} if the graph is directed, or between {@code start} and
+   * {@code end} if the graph is undirected.
+   * The nodes shall not be {@code null}.
+   * @param start The start node of the edge.
+   * @param end The end node of the edge.
+   * @return {@code true} if the graph contains the edge, {@code false otherwise}.
+   */
+  @Contract(pure = true)
+  boolean containsEdge(@NotNull V start, @NotNull V end);
 
   /**
    * Gets the number of nodes in the graph.
@@ -65,8 +85,6 @@ public interface AbstractGraph<V, L> {
 
 /*
 public interface AbstractGraph<V,L> {
-  public boolean containsNode(V a); // controlla se un nodo è nel grafo -- O(1)
-  public boolean containsEdge(V a, V b); // controlla se un arco è nel grafo -- O(1) (*)
   public boolean removeNode(V a); // rimuove un nodo dal grafo -- O(N)
   public boolean removeEdge(V a, V b); // rimuove un arco dal grafo -- O(1) (*)
   // public int numNodes(); // numero di nodi -- O(1)
