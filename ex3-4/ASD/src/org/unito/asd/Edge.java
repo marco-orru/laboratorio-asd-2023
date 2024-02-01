@@ -7,11 +7,12 @@ import java.util.Objects;
 
 /**
  * Represents an edge between to nodes of a {@link Graph}.
+ *
  * @param start The start node. It can't be {@code null}.
- * @param end The end node. It can't be {@code null}.
+ * @param end   The end node. It can't be {@code null}.
  * @param label The label associated with the edge.
- * @param <V> Type of nodes in the graph.
- * @param <L> Type of labels associated with edges in the graph.
+ * @param <V>   Type of nodes in the graph.
+ * @param <L>   Type of labels associated with edges in the graph.
  */
 public record Edge<V, L>(
         @Contract(pure = true) @NotNull V start,
@@ -23,7 +24,7 @@ public record Edge<V, L>(
   public boolean equals(Object obj) {
     if (!(obj instanceof Edge<?, ?>)) return false;
     if (obj == this) return true;
-    var other = (Edge<V, ?>)obj;  // Ignore label.
+    var other = (Edge<V, ?>) obj;  // Ignore label.
     return Objects.equals(other.start, start) && Objects.equals(other.end, end);
   }
 

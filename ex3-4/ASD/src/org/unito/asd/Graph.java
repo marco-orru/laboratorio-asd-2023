@@ -9,6 +9,7 @@ import java.util.*;
 
 /**
  * Represents a graph optimized for sparse data.
+ *
  * @param <V> The type of nodes in the graph.
  * @param <L> The type of labels associated with edges in the graph.
  */
@@ -20,6 +21,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
 
   /**
    * Constructs a new {@link Graph} with the specified characteristics.
+   *
    * @param directed {@code true} if the graph is directed, {@code false} otherwise.
    * @param labelled {@code true} if the graph is labelled, {@code false} otherwise.
    */
@@ -32,6 +34,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
 
   /**
    * Checks if the graph is directed.
+   *
    * @return {@code true} if the graph is directed, {@code false} otherwise.
    * @implNote This operation has constant time complexity O(1).
    */
@@ -43,6 +46,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
 
   /**
    * Checks if the graph is labelled.
+   *
    * @return {@code true} if the graph is labelled, {@code false} otherwise.
    * @implNote This operation has constant time complexity O(1).
    */
@@ -56,6 +60,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
    * Adds a node to the graph.
    * The node shall not be {@code null}.
    * A node is being added if and only if it is not already present in the graph.
+   *
    * @param node The node to be added.
    * @return {@code true} if the node was successfully added, {@code false} otherwise.
    * @implNote This operation has constant time complexity O(1).
@@ -76,12 +81,13 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
    * The provided nodes shall not be {@code null}.
    * The provided label shall not be {@code null} if the graph is labelled.
    * An edge can be added if and only if the graph contains the two nodes.
-   * If an edge already exists between the two nodes then this function returns {@code true}, but no operation is being made.
+   * If an edge already exists between the two nodes then this function returns {@code false}.
+   *
    * @param start The start node of the edge.
-   * @param end The end node of the edge.
+   * @param end   The end node of the edge.
    * @param label The label associated with the edge (it is ignored if the graph is not labelled).
    * @return {@code true} if the edge was successfully added, {@code false otherwise}.
-   * @exception IllegalArgumentException If {@code label} is {@code null} and the graph is labelled.
+   * @throws IllegalArgumentException If {@code label} is {@code null} and the graph is labelled.
    * @implNote This operation has constant time complexity O(1).
    */
   @Override
@@ -90,12 +96,12 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
     if (labelled && label == null)
       throw new IllegalArgumentException("The label of an edge can't be 'null' in a labelled graph.");
 
-    if (!containsNode(start) || !containsNode(end))
+    if (!containsNode(start) || !containsNode(end) || containsEdge(start, end))
       return false;
 
     var edge = new Edge<>(start, end, label);
     if (!adjacencyMap.get(start).add(edge))
-      return true;  // Already present, but it's not an error.
+      return false;
 
     numEdges++;
 
@@ -110,6 +116,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   /**
    * Checks if a node is present in the graph.
    * The node shall not be {@code null}.
+   *
    * @param node The node to check for.
    * @return {@code true} if the node is present in the graph, {@code false} otherwise.
    * @implNote This operation has constant time complexity O(1).
@@ -124,8 +131,9 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
    * Checks if a node is present from node {@code start} to {@code end} if the graph is directed, or between {@code start} and
    * {@code end} if the graph is undirected.
    * The nodes shall not be {@code null}.
+   *
    * @param start The start node of the edge.
-   * @param end The end node of the edge.
+   * @param end   The end node of the edge.
    * @implNote This operation has constant time complexity O(1).
    */
   @Override
@@ -146,6 +154,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
    * Removes a node from the graph, deleting also the edges linked from and linked to it.
    * The node shall not be {@code null}.
    * The node is being removed if and only if it's present inside the graph.
+   *
    * @param node The node to be removed.
    * @return {@code true} if the node was successfully removed, {@code false} otherwise.
    * @implNote This operation has linear time complexity O(N).
@@ -175,8 +184,9 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
    * Removes an edge between two nodes from the graph.
    * The nodes shall not be {@code null}.
    * The edge is being removed if and only if is present in the graph.
+   *
    * @param start The start node of the edge.
-   * @param end The end node of the edge.
+   * @param end   The end node of the edge.
    * @return {@code true} if the edge was successfully removed, {@code false} otherwise.
    * @implSpec This operation has constant time complexity O(1).
    */
@@ -209,6 +219,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
 
   /**
    * Gets the number of nodes in the graph.
+   *
    * @return The number of nodes in the graph.
    * @implNote This operation has constant time complexity O(1).
    */
@@ -219,6 +230,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
 
   /**
    * Gets the number of edges in the graph.
+   *
    * @return The number of edges in the graph.
    * @implNote This operation has constant time complexity O(1).
    */
@@ -230,8 +242,9 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   /**
    * Gets a readonly collection of all the nodes in the graph.
    * The collection will be empty if the graph is empty.
+   *
    * @return A collection of all the nodes in the graph.
-   * @implNote  This operation has constant time complexity O(1).
+   * @implNote This operation has constant time complexity O(1).
    */
   @Override
   @Contract(pure = true)
@@ -252,6 +265,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   /**
    * Gets a collection of all the edges in the graph.
    * The collection will be empty if there are no edges in the graph.
+   *
    * @return A collection of all the edges in the graph.
    * @implNote This operation has linear time complexity O(N).
    */
@@ -277,10 +291,11 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   /**
    * Get a collection of neighboring nodes for the given node.
    * The node shall not be {@code null} and shall be present in the graph.
+   *
    * @param node The node for which neighbours are to be received.
    * @return A collection of neighbouring nodes for the given node.
-   * @exception IllegalStateException If the node is not present in the graph.
-   * @implSpec This operation has constant time complexity O(1).
+   * @throws IllegalStateException If the node is not present in the graph.
+   * @implNote This operation has constant time complexity O(1).
    */
   @Override
   @Contract(pure = true)
@@ -307,11 +322,12 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
    * Gets the label associated with an edge between nodes {@code start} and node {@code end}.
    * The nodes shall not be {@code null}.
    * The graph shall be labelled.
+   *
    * @param start The start node of the edge.
-   * @param end The end node of the edge.
+   * @param end   The end node of the edge.
    * @return The label associated with the edge, if exists, or {@code null} if the edge does not exist.
-   * @exception IllegalStateException The graph is not labelled.
-   * @implSpec This operation has constant time complexity O(1).
+   * @throws IllegalStateException The graph is not labelled.
+   * @implNote This operation has constant time complexity O(1).
    */
   @Override
   @Contract(pure = true)
