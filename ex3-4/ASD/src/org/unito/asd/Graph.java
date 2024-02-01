@@ -17,6 +17,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   private final Map<V, Set<AbstractEdge<V, L>>> adjacencyList;
   private final boolean directed;
   private final boolean labelled;
+  private int numEdges;
 
   /**
    * Constructs a new {@link Graph} with the specified characteristics.
@@ -27,6 +28,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
     this.adjacencyList = new HashMap<>();
     this.directed = directed;
     this.labelled = labelled;
+    this.numEdges = 0;
   }
 
   /**
@@ -81,6 +83,8 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
     if (!adjacencyList.get(start).add(edge))
       return true;  // Already present, but it's not an error.
 
+    numEdges++;
+
     if (!directed) {
       edge = new Edge<>(end, start, label);
       adjacencyList.get(end).add(edge);
@@ -117,5 +121,14 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   @Override
   public int numNodes() {
     return adjacencyList.size();
+  }
+
+  /**
+   * {@inheritDoc}
+   * @implNote This operation has constant time complexity O(1).
+   */
+  @Override
+  public int numEdges() {
+    return numEdges;
   }
 }

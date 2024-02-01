@@ -81,14 +81,20 @@ public interface AbstractGraph<V, L> {
    */
   @Contract(pure = true)
   int numNodes();
+
+  /**
+   * Gets the number of edges in the graph.
+   * @return The number of edges in the graph.
+   * @implSpec This operation shall have linear time complexity O(n).
+   */
+  int numEdges();
 }
 
 /*
 public interface AbstractGraph<V,L> {
   public boolean removeNode(V a); // rimuove un nodo dal grafo -- O(N)
   public boolean removeEdge(V a, V b); // rimuove un arco dal grafo -- O(1) (*)
-  // public int numNodes(); // numero di nodi -- O(1)
-  public int numEdges(); // numero di archi -- O(N)
+
   public Collection<V> getNodes(); // recupero dei nodi del grafo -- O(N)
   public Collection<? extends AbstractEdge<V,L>> getEdges(); // recupero degli archi del grafo -- O(N)
   public Collection<V> getNeighbours(V a); // recupero dei nodi adiacenti ad un dato nodo -- O(1) (*)

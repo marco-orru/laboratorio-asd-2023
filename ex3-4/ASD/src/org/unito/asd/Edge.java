@@ -3,6 +3,8 @@ package org.unito.asd;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 /**
  * Represents an edge between to nodes of a {@link Graph}.
  * @param start The start node. It can't be {@code null}.
@@ -15,4 +17,18 @@ public record Edge<V, L>(
         @Contract(pure = true) @NotNull V start,
         @Contract(pure = true) @NotNull V end,
         @Contract(pure = true) L label
-) implements AbstractEdge<V, L> { }
+) implements AbstractEdge<V, L> {
+  @SuppressWarnings("unchecked")
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Edge<?, ?>)) return false;
+    if (obj == this) return true;
+    var other = (Edge<V, ?>)obj;  // Ignore label.
+    return Objects.equals(other.start, start) && Objects.equals(other.end, end);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(start, end);  // Ignore label.
+  }
+}
