@@ -60,6 +60,7 @@ int main(int argc, char *argv[]) {
 
   profile_execution(input_file_path, thresholds, thresholds_count);
 
-  free(thresholds);
+  free((void*)thresholds);
+
   return EXIT_SUCCESS;
 }

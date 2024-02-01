@@ -12,3 +12,9 @@
  * @note @c max_height must be greater than or equal to 1.
  */
 void find_errors(FILE *dict_file, FILE *text_file, size_t max_height);
+
+#if __PROFILER
+void init_profiler__errors_finder(FILE* text_file);
+void shutdown_profiler__errors_finder(void);
+void profiler__errors_finder(FILE* dict_file, size_t max_height);
+#endif
