@@ -1,6 +1,12 @@
 package org.unito.asd;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents a graph optimized for sparse data.
@@ -8,9 +14,9 @@ import org.jetbrains.annotations.Contract;
  * @param <L> The type of labels associated with edges in the graph.
  */
 public final class Graph<V, L> implements AbstractGraph<V, L> {
+  private final Map<V, Set<AbstractEdge<V, L>>> adiacencyList;
   private final boolean directed;
   private final boolean labelled;
-  private int numNodes;
 
   /**
    * Constructs a new {@link Graph} with the specified characteristics.
@@ -18,9 +24,9 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
    * @param labelled {@code true} if the graph is labelled, {@code false} otherwise.
    */
   public Graph(boolean directed, boolean labelled) {
+    this.adiacencyList = new HashMap<>();
     this.directed = directed;
     this.labelled = labelled;
-    this.numNodes = 0;
   }
 
   /**
@@ -30,7 +36,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   @Override
   @Contract(pure = true)
   public boolean isDirected() {
-    return this.directed;
+    return directed;
   }
 
   /**
@@ -40,7 +46,21 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   @Override
   @Contract(pure = true)
   public boolean isLabelled() {
-    return this.labelled;
+    return labelled;
+  }
+
+  /**
+   * {@inheritDoc}
+   * @implNote This operation has constant time complexity O(1).
+   */
+  @Override
+  @Contract(mutates = "this")
+  public boolean addNode(@NotNull V node) {
+    if (adiacencyList.containsKey(node))
+      return false;
+
+    adiacencyList.put(node, new HashSet<>());
+    return true;
   }
 
   /**
@@ -49,6 +69,6 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
    */
   @Override
   public int numNodes() {
-    return this.numNodes;
+    return adiacencyList.size();
   }
 }

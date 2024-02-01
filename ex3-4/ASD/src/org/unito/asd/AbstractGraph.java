@@ -1,6 +1,7 @@
 package org.unito.asd;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Defines an interface representing a graph with generic nodes and edge labels.
@@ -25,6 +26,17 @@ public interface AbstractGraph<V, L> {
   boolean isLabelled();
 
   /**
+   * Adds a node to the graph.
+   * The node shall not be {@code null}.
+   * A node is being added if and only if it is not already present in the graph.
+   * @param node The node to be added.
+   * @return {@code true} if the node was successfully added, {@code false} otherwise.
+   * @implSpec This operation shall have constant time complexity O(1).
+   */
+  @Contract(mutates = "this")
+  boolean addNode(@NotNull V node);
+
+  /**
    * Gets the number of nodes in the graph.
    * @return The number of nodes in the graph.
    * @implSpec This operation shall have constant time complexity O(1).
@@ -35,13 +47,12 @@ public interface AbstractGraph<V, L> {
 
 /*
 public interface AbstractGraph<V,L> {
-  public boolean addNode(V a); // aggiunge un nodo -- O(1)
   public boolean addEdge(V a, V b, L l); // aggiunge un arco dati estremi ed etichetta -- O(1)
   public boolean containsNode(V a); // controlla se un nodo è nel grafo -- O(1)
   public boolean containsEdge(V a, V b); // controlla se un arco è nel grafo -- O(1) (*)
   public boolean removeNode(V a); // rimuove un nodo dal grafo -- O(N)
   public boolean removeEdge(V a, V b); // rimuove un arco dal grafo -- O(1) (*)
-  public int numNodes(); // numero di nodi -- O(1)
+  // public int numNodes(); // numero di nodi -- O(1)
   public int numEdges(); // numero di archi -- O(N)
   public Collection<V> getNodes(); // recupero dei nodi del grafo -- O(N)
   public Collection<? extends AbstractEdge<V,L>> getEdges(); // recupero degli archi del grafo -- O(N)
