@@ -37,6 +37,24 @@ public interface AbstractGraph<V, L> {
   boolean addNode(@NotNull V node);
 
   /**
+   * Adds an edge from node {@code start} to node {@code end} if the graph is directed, or between
+   * node {@code start} to node {@code end} if the graph is undirected.
+   * The provided nodes shall not be {@code null}.
+   * The provided label shall not be {@code null} if the graph is labelled.
+   * An edge can be added if and only if the graph contains the two nodes.
+   * If an edge already exists between the two nodes (eventually with the same label, if the graph is labelled)
+   * then this function returns {@code true}, but no operation is being made.
+   * @param start The start node of the edge.
+   * @param end The end node of the edge.
+   * @param label The label associated with the edge (it is ignored if the graph is not labelled).
+   * @return {@code true} if the edge was successfully added, {@code false otherwise}.
+   * @exception IllegalArgumentException If {@code label} is {@code null} and the graph is labelled.
+   * @implSpec This operation shall have constant time complexity O(1).
+   */
+  @Contract(mutates = "this")
+  boolean addEdge(@NotNull V start, @NotNull V end, L label) throws IllegalArgumentException;
+
+  /**
    * Gets the number of nodes in the graph.
    * @return The number of nodes in the graph.
    * @implSpec This operation shall have constant time complexity O(1).
@@ -47,7 +65,6 @@ public interface AbstractGraph<V, L> {
 
 /*
 public interface AbstractGraph<V,L> {
-  public boolean addEdge(V a, V b, L l); // aggiunge un arco dati estremi ed etichetta -- O(1)
   public boolean containsNode(V a); // controlla se un nodo è nel grafo -- O(1)
   public boolean containsEdge(V a, V b); // controlla se un arco è nel grafo -- O(1) (*)
   public boolean removeNode(V a); // rimuove un nodo dal grafo -- O(N)

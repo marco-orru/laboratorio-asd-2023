@@ -14,7 +14,7 @@ import java.util.Set;
  * @param <L> The type of labels associated with edges in the graph.
  */
 public final class Graph<V, L> implements AbstractGraph<V, L> {
-  private final Map<V, Set<AbstractEdge<V, L>>> adiacencyList;
+  private final Map<V, Set<AbstractEdge<V, L>>> adjacencyList;
   private final boolean directed;
   private final boolean labelled;
 
@@ -24,7 +24,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
    * @param labelled {@code true} if the graph is labelled, {@code false} otherwise.
    */
   public Graph(boolean directed, boolean labelled) {
-    this.adiacencyList = new HashMap<>();
+    this.adjacencyList = new HashMap<>();
     this.directed = directed;
     this.labelled = labelled;
   }
@@ -56,19 +56,45 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   @Override
   @Contract(mutates = "this")
   public boolean addNode(@NotNull V node) {
-    if (adiacencyList.containsKey(node))
+    if (adjacencyList.containsKey(node))   // TODO: Replace with contains method when implemented
       return false;
 
-    adiacencyList.put(node, new HashSet<>());
+    adjacencyList.put(node, new HashSet<>());
     return true;
   }
 
   /**
    * {@inheritDoc}
-   * @implNote This operation have constant time complexity O(1).
+   * @exception IllegalArgumentException If {@code label} is {@code null} and the graph is labelled.
+   * @implNote This operation has constant time complexity O(1).
+   */
+  @Override
+  @Contract(mutates = "this")
+  public boolean addEdge(@NotNull V start, @NotNull V end, L label) throws IllegalArgumentException {
+    if (labelled && label == null)
+      throw new IllegalArgumentException("The label of an edge can't be 'null' in a labelled graph.");
+
+    if (!adjacencyList.containsKey(start) || !adjacencyList.containsKey(end))  // TODO: replace with contains method when implemented.
+      return false;
+
+    var edge = new Edge<>(start, end, label);
+    if (!adjacencyList.get(start).add(edge))
+      return true;  // Already present, but it's not an error.
+
+    if (!directed) {
+      edge = new Edge<>(end, start, label);
+      adjacencyList.get(end).add(edge);
+    }
+
+    return true;
+  }
+
+  /**
+   * {@inheritDoc}
+   * @implNote This operation has constant time complexity O(1).
    */
   @Override
   public int numNodes() {
-    return adiacencyList.size();
+    return adjacencyList.size();
   }
 }
