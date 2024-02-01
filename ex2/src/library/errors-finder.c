@@ -57,7 +57,7 @@ static void print_errors(FILE *text_file, SkipList *dictionary) {
   printf("Errors found:\n");
   while ((word = read_next_word(text_file))) {
     if (!search_skiplist(dictionary, word))
-      printf("\t%s\n", word);
+      printf("  - %s\n", word);
   }
 }
 
