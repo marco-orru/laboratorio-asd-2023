@@ -145,7 +145,18 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   @Override
   @Contract(mutates = "this")
   public boolean removeNode(@NotNull V node) {
-    return false;
+    if (!containsNode(node))
+      return false;
+
+    for (var edge : adjacencyMap.get(node)) {
+      var edgeToRemove = new Edge<>(edge.end(), edge.start(), null);
+      adjacencyMap.get(edge.end()).remove(edgeToRemove);
+    }
+
+    numEdges -= adjacencyMap.get(node).size();
+    adjacencyMap.remove(node);
+
+    return true;
   }
 
   /**
