@@ -294,14 +294,14 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
    *
    * @param node The node for which neighbours are to be received.
    * @return A collection of neighbouring nodes for the given node.
-   * @throws IllegalStateException If the node is not present in the graph.
+   * @throws IllegalArgumentException If the node is not present in the graph.
    * @implNote This operation has constant time complexity O(1).
    */
   @Override
   @Contract(pure = true)
-  public @NotNull @Unmodifiable AbstractCollection<V> getNeighbours(@NotNull V node) throws IllegalStateException {
+  public @NotNull @Unmodifiable AbstractCollection<V> getNeighbours(@NotNull V node) throws IllegalArgumentException {
     if (!containsNode(node))
-      throw new IllegalStateException("The graph does not contain the node");
+      throw new IllegalArgumentException("The graph does not contain the node");
 
     var neighbours = new HashSet<V>();
     adjacencyMap.get(node).forEach(edge -> neighbours.add(edge.end()));  // -> O(1) when the graph is really sparse
@@ -334,6 +334,9 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
   public @Nullable L getLabel(@NotNull V start, @NotNull V end) throws IllegalStateException {
     if (!labelled)
       throw new IllegalStateException("Cannot retrieve label from a non labelled graph");
+
+    if (!containsEdge(start, end))
+      return null;
 
     for (var edge : adjacencyMap.get(start)) {   // -> O(1) when the graph is really sparse
       if (Objects.equals(end, edge.end()))
