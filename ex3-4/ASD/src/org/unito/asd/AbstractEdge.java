@@ -15,7 +15,7 @@ public interface AbstractEdge<V, L> {
    * @return The start node of the edge.
    */
   @Contract(pure = true)
-  V start();
+  V getStart();
 
   /**
    * Gets the end node of the edge.
@@ -23,7 +23,7 @@ public interface AbstractEdge<V, L> {
    * @return The end node of the edge.
    */
   @Contract(pure = true)
-  V end();
+  V getEnd();
 
   /**
    * Gets the label associated with the edge.
@@ -31,5 +31,5 @@ public interface AbstractEdge<V, L> {
    * @return The label associated with the edge.
    */
   @Contract(pure = true)
-  L label();
+  L getLabel();
 }

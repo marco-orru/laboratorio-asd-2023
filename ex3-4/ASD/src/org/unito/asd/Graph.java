@@ -108,6 +108,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
     if (!directed) {
       edge = new Edge<>(end, start, label);
       adjacencyMap.get(end).add(edge);
+      numEdges++;
     }
 
     return true;
@@ -143,7 +144,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
       return false;
 
     for (var edge : adjacencyMap.get(start)) {  // -> O(1) when the graph is really sparse
-      if (Objects.equals(end, edge.end()))
+      if (Objects.equals(end, edge.getEnd()))
         return true;
     }
 
@@ -170,8 +171,9 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
 
     for (var edges : adjacencyMap.values()) {
       for (var edge : edges) {  // -> O(1) when the graph is really sparse
-        if (Objects.equals(edge.end(), node)) {
+        if (Objects.equals(edge.getEnd(), node)) {
           edges.remove(edge);
+          numEdges--;
           break;
         }
       }
@@ -197,7 +199,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
       return false;
 
     for (var edge : adjacencyMap.get(start)) {  // -> O(1) when the graph is really sparse
-      if (Objects.equals(edge.end(), end)) {
+      if (Objects.equals(edge.getEnd(), end)) {
         adjacencyMap.get(start).remove(edge);
         break;
       }
@@ -207,8 +209,9 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
 
     if (!directed) {
       for (var edge : adjacencyMap.get(end)) {  // -> O(1) when the graph is really sparse
-        if (Objects.equals(edge.end(), start)) {
+        if (Objects.equals(edge.getEnd(), start)) {
           adjacencyMap.get(end).remove(edge);
+          numEdges--;
           break;
         }
       }
@@ -304,7 +307,7 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
       throw new IllegalArgumentException("The graph does not contain the node");
 
     var neighbours = new HashSet<V>();
-    adjacencyMap.get(node).forEach(edge -> neighbours.add(edge.end()));  // -> O(1) when the graph is really sparse
+    adjacencyMap.get(node).forEach(edge -> neighbours.add(edge.getEnd()));  // -> O(1) when the graph is really sparse
     return new AbstractCollection<>() {
       @Override
       public @NotNull Iterator<V> iterator() {
@@ -339,8 +342,8 @@ public final class Graph<V, L> implements AbstractGraph<V, L> {
       return null;
 
     for (var edge : adjacencyMap.get(start)) {   // -> O(1) when the graph is really sparse
-      if (Objects.equals(end, edge.end()))
-        return edge.label();
+      if (Objects.equals(end, edge.getEnd()))
+        return edge.getLabel();
     }
 
     return null;
