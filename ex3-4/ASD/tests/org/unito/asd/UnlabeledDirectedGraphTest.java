@@ -1,27 +1,28 @@
 package org.unito.asd;
 
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("DataFlowIssue")
-class LabeledUndirectedGraphTest {
+class UnlabeledDirectedGraphTest {
   private Graph<Integer, String> graph;
 
   @BeforeEach
   void setUp() {
-    graph = new Graph<>(false, true);
+    graph = new Graph<>(true, false);
   }
 
   @Test
   void isDirected() {
-    assertFalse(graph.isDirected());
+    assertTrue(graph.isDirected());
   }
 
   @Test
   void isLabelled() {
-    assertTrue(graph.isLabelled());
+    assertFalse(graph.isLabelled());
   }
 
   @Test
@@ -41,13 +42,13 @@ class LabeledUndirectedGraphTest {
     graph.addNode(2);
 
     assertTrue(graph.addEdge(1, 2, "1to2"));
-    assertFalse(graph.addEdge(2, 1, "2to1"));  // Because it's undirected.
+    assertTrue(graph.addEdge(2, 1, "2to1"));
     assertFalse(graph.addEdge(1, 2, "another_1to2"));
     assertEquals(2, graph.numEdges());
 
     assertThrowsExactly(IllegalArgumentException.class, () -> graph.addEdge(null, 0, "error"));
     assertThrowsExactly(IllegalArgumentException.class, () -> graph.addEdge(0, null, "error"));
-    assertThrowsExactly(IllegalArgumentException.class, () -> graph.addEdge(0, 0, null));
+    assertDoesNotThrow(() -> graph.addEdge(0, 0, null));
   }
 
   @Test
@@ -74,7 +75,7 @@ class LabeledUndirectedGraphTest {
     graph.addEdge(1, 2, "1to2");
 
     assertTrue(graph.containsEdge(1, 2));
-    assertTrue(graph.containsEdge(2, 1));  // Because it's undirected.
+    assertFalse(graph.containsEdge(2, 1));
   }
 
   @Test
@@ -125,9 +126,9 @@ class LabeledUndirectedGraphTest {
     graph.addNode(1);
     graph.addNode(2);
     graph.addEdge(1, 2, "1to2");
-    assertEquals(2, graph.numEdges());  // Because it's undirected.
+    assertEquals(1, graph.numEdges());
     graph.removeEdge(1, 2);
-    assertEquals(0, graph.numEdges());  // Because it's undirected.
+    assertEquals(0, graph.numEdges());
   }
 
   @Test
@@ -159,7 +160,7 @@ class LabeledUndirectedGraphTest {
     assertTrue(graph.getEdges().contains(edge));
 
     edge = new Edge<>(2, 1, null);
-    assertTrue(graph.getEdges().contains(edge));  // Because it's undirected.
+    assertFalse(graph.getEdges().contains(edge));
 
     edge = new Edge<>(2, 3, null);
     assertTrue(graph.getEdges().contains(edge));
@@ -188,12 +189,6 @@ class LabeledUndirectedGraphTest {
   void getLabel() {
     assertThrowsExactly(IllegalArgumentException.class, () -> graph.getLabel(null, 0));
     assertThrowsExactly(IllegalArgumentException.class, () -> graph.getLabel(0, null));
-    assertDoesNotThrow(() -> graph.getLabel(1, 2));
-    assertNull(graph.getLabel(1, 2));
-
-    graph.addNode(1);
-    graph.addNode(2);
-    graph.addEdge(1, 2, "2to1");
-    assertEquals("2to1", graph.getLabel(1, 2));
+    assertThrowsExactly(IllegalStateException.class, () -> graph.getLabel(1, 2));
   }
 }
