@@ -57,7 +57,7 @@ separati da `\n`.
 
 Usando l'algoritmo implementato precedentemente, si realizzi la seguente funzione per ordinare *record* contenuti nel file `records.csv` in ordine non decrescente secondo i valori contenuti nei tre campi "field".
 
-```
+```c
 void sort_records(FILE *infile, FILE *outfile, size_t k, size_t field);
 ```
 
