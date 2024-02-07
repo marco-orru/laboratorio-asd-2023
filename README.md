@@ -22,7 +22,7 @@ Con *BinaryInsertion Sort* ci riferiamo a una versione dell'algoritmo *Insertion
 
 In alternativa, è anche ammissibile implementare il seguente prototipo meno generico, che ordina dati a patto che siano organizzati in un array di puntatori:
 
-```
+```c
 void merge_binary_insertion_sort(void **base, size_t nitems, size_t k, int (*compar)(const void*, const void*));
 ```
 
